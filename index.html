@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trade Calculator</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vuetify@3.1.13/dist/vuetify.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
+  </head>
+  <body>
+    <div id="app">
+      <v-app>
+        <v-app-bar color="primary" density="compact">
+          <v-app-bar-title>Trade Calculator</v-app-bar-title>
+        </v-app-bar>
+        <v-main>
+          <v-container fluid>
+            <v-row dense>
+              <v-col cols="12" xs="12" sm="12" md="6" lg="4">
+                <v-card title="ロスカット計算">
+                  <v-card-text>
+                    <v-container>
+                      <v-row dense>
+                        <v-col cols="6">
+                          <v-text-field label="Loss Cut Rate" type="number" v-model="lossCutRate" color="primary" variant="underlined" density="compact" hide-details="auto" clearable></v-text-field>
+                          <v-slider density="compact" v-model="lossCutRate" color="primary" :min="0" :max="100" :step="1"></v-slider>
+                        </v-col>
+                        <v-col cols="6">
+                          <v-text-field label="Entry Price" type="number" v-model="entryPrice" color="primary" variant="underlined" density="compact" hide-details="auto" clearable></v-text-field>
+                          <v-slider density="compact" v-model="entryPrice" color="primary" :min="0" :max="10000" :step="1"></v-slider>
+                        </v-col>
+                      </v-row>
+                      <v-row dense>
+                        <v-col cols="12">
+                          <div class="text-h7 d-flex">
+                            <div>損切り額：</div>
+                            <div class="text-right w-25" style="border-bottom: 2px solid rgb(var(--v-theme-primary));">{{ lossCutPrice }}</div>
+                          </div>
+                        </v-col>
+                      </v-row>
+                    </v-container>
+                  </v-card-text>
+                </v-card>
+              </v-col>
+              <v-col cols="12" xs="12" sm="12" md="6" lg="4">
+                <v-card title="損切り計算">
+                  <v-card-text>
+                    <v-container>
+                      <v-row dense>
+                        <v-col cols="4">
+                          <v-text-field label="Entry Price" type="number" v-model="unitPrice" color="primary" variant="underlined" dense hide-details="auto" clearable></v-text-field>
+                          <v-slider density="compact" v-model="unitPrice" color="primary" :min="0" :max="10000" :step="1"></v-slider>
+                        </v-col>
+                        <v-col cols="4">
+                          <v-text-field label="Current Price" type="number" v-model="currentPrice" color="primary" variant="underlined" dense hide-details="auto" clearable></v-text-field>
+                          <v-slider density="compact" v-model="currentPrice" color="primary" :min="0" :max="10000" :step="1"></v-slider>
+                        </v-col>
+                        <v-col cols="4">
+                          <v-text-field label="Number of Trade" type="number" v-model="tradeNum" color="primary" variant="underlined" dense hide-details="auto" clearable></v-text-field>
+                          <v-slider density="compact" v-model="tradeNum" color="primary" :min="0" :max="10000" :step="100"></v-slider>
+                        </v-col>
+                      </v-row>
+                      <v-row align="baseline" dense>
+                        <v-col cols="6">
+                          <div class="text-h7 d-flex">
+                            <div>損益：</div>
+                            <div class="text-right w-50" style="border-bottom: 2px solid rgb(var(--v-theme-primary));">{{ profitLoss }}</div>
+                          </div>
+                        </v-col>
+                        <v-col cols="6">
+                          <v-btn-toggle density="compact" v-model="tradeKind" rounded="0" color="primary" group>
+                            <v-btn value="Long">Long</v-btn>
+                            <v-btn value="Short">Short</v-btn>
+                          </v-btn-toggle>
+                        </v-col>
+                      </v-row>
+                    </v-container>
+                  </v-card-text>
+                </v-card>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-main>
+      </v-app>
+    </div>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@3.1.13/dist/vuetify.min.js"></script>
+    <script>
+      const { createApp } = Vue
+      const { createVuetify } = Vuetify
+
+      const vuetify = createVuetify()
+
+      const app = createApp({
+        data() {
+          return {
+            lossCutRate: 3,
+            entryPrice: 0,
+            unitPrice: 0,
+            currentPrice: 0,
+            tradeNum: 100,
+            tradeKind: "Long"
+          }
+        },
+        computed: {
+          lossCutPrice() {
+            const price = this.entryPrice * (1 - this.lossCutRate / 100)
+            const rounded = Math.round(price * 100) / 100
+            return rounded.toLocaleString()
+          },
+          profitLoss() {
+            let price = 0
+            if (this.tradeKind == "Long") {
+              price = (this.currentPrice * this.tradeNum) - (this.unitPrice * this.tradeNum)
+            } else {
+              price = (this.unitPrice * this.tradeNum) - (this.currentPrice * this.tradeNum)
+            }
+            return price.toLocaleString()
+          }
+        },
+        method: {
+
+        }
+      })
+      app.use(vuetify).mount('#app')
+    </script>
+  </body>
+</html>
