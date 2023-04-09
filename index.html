@@ -17,7 +17,7 @@
           <v-container fluid>
             <v-row dense>
               <v-col cols="12" xs="12" sm="12" md="6" lg="4">
-                <v-card title="ロスカット計算">
+                <v-card title="Loss Amount Calculation">
                   <v-card-text>
                     <v-container>
                       <v-row dense>
@@ -32,9 +32,9 @@
                       </v-row>
                       <v-row dense>
                         <v-col cols="12">
-                          <div class="text-h7 d-flex">
-                            <div>損切り額：</div>
-                            <div class="text-right w-25" style="border-bottom: 2px solid rgb(var(--v-theme-primary));">{{ lossCutPrice }}</div>
+                          <div class="text-h6 d-flex">
+                            <div>Loss cut line：</div>
+                            <div class="text-right" style="min-width: 100px;border-bottom: 2px solid rgb(var(--v-theme-primary));">{{ lossCutPrice }}</div>
                           </div>
                         </v-col>
                       </v-row>
@@ -43,35 +43,32 @@
                 </v-card>
               </v-col>
               <v-col cols="12" xs="12" sm="12" md="6" lg="4">
-                <v-card title="損切り計算">
+                <v-card title="Stop-loss Calculation">
                   <v-card-text>
                     <v-container>
                       <v-row dense>
-                        <v-col cols="4">
+                        <v-col cols="12" xs="12" sm="12" md="12" >
+                          <v-switch density="compact" v-model="isShort" label="Short" color="primary" hide-details></v-switch>
+                        </v-col>
+                        <v-col cols="6" xs="6" sm="4" md="4" >
                           <v-text-field label="Entry Price" type="number" v-model="unitPrice" color="primary" variant="underlined" dense hide-details="auto" clearable></v-text-field>
                           <v-slider density="compact" v-model="unitPrice" color="primary" :min="0" :max="10000" :step="1"></v-slider>
                         </v-col>
-                        <v-col cols="4">
+                        <v-col cols="6" xs="6" sm="4" md="4" >
                           <v-text-field label="Current Price" type="number" v-model="currentPrice" color="primary" variant="underlined" dense hide-details="auto" clearable></v-text-field>
                           <v-slider density="compact" v-model="currentPrice" color="primary" :min="0" :max="10000" :step="1"></v-slider>
                         </v-col>
-                        <v-col cols="4">
+                        <v-col cols="6" xs="6" sm="4" md="4" >
                           <v-text-field label="Number of Trade" type="number" v-model="tradeNum" color="primary" variant="underlined" dense hide-details="auto" clearable></v-text-field>
                           <v-slider density="compact" v-model="tradeNum" color="primary" :min="0" :max="10000" :step="100"></v-slider>
                         </v-col>
                       </v-row>
                       <v-row align="baseline" dense>
-                        <v-col cols="6">
-                          <div class="text-h7 d-flex">
+                        <v-col cols="12">
+                          <div class="text-h6 d-flex">
                             <div>損益：</div>
-                            <div class="text-right w-50" style="border-bottom: 2px solid rgb(var(--v-theme-primary));">{{ profitLoss }}</div>
+                            <div class="text-right" style="min-width: 100px;border-bottom: 2px solid rgb(var(--v-theme-primary));">{{ profitLoss }}</div>
                           </div>
-                        </v-col>
-                        <v-col cols="6">
-                          <v-btn-toggle density="compact" v-model="tradeKind" rounded="0" color="primary" group>
-                            <v-btn value="Long">Long</v-btn>
-                            <v-btn value="Short">Short</v-btn>
-                          </v-btn-toggle>
                         </v-col>
                       </v-row>
                     </v-container>
@@ -99,7 +96,7 @@
             unitPrice: 0,
             currentPrice: 0,
             tradeNum: 100,
-            tradeKind: "Long"
+            isShort: false
           }
         },
         computed: {
@@ -110,16 +107,13 @@
           },
           profitLoss() {
             let price = 0
-            if (this.tradeKind == "Long") {
-              price = (this.currentPrice * this.tradeNum) - (this.unitPrice * this.tradeNum)
-            } else {
+            if (this.isShort) {
               price = (this.unitPrice * this.tradeNum) - (this.currentPrice * this.tradeNum)
+            } else {
+              price = (this.currentPrice * this.tradeNum) - (this.unitPrice * this.tradeNum)
             }
             return price.toLocaleString()
           }
-        },
-        method: {
-
         }
       })
       app.use(vuetify).mount('#app')
