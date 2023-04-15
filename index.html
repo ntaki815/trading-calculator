@@ -16,59 +16,110 @@
         <v-main>
           <v-container fluid>
             <v-row dense>
+              <!--  -->
               <v-col cols="12" xs="12" sm="12" md="6" lg="4">
-                <v-card title="Loss amount calculation">
-                  <v-card-text>
+                <v-card>
+                  <v-card-item>
+                    <v-card-subtitle>Loss amount calculation</v-card-subtitle>
+                  </v-card-item>
+                  <v-card-text class="py-0 px-0">
                     <v-container>
                       <v-row dense>
                         <v-col cols="6">
-                          <v-text-field label="Loss Cut Rate" type="number" v-model="lossCutRate" color="primary" variant="underlined" density="compact" hide-details="auto" clearable></v-text-field>
-                          <v-slider density="compact" v-model="lossCutRate" color="primary" :min="0" :max="100" :step="1"></v-slider>
+                          <v-text-field label="Loss cut rate" type="number" v-model="inputLossAmount.lossCutRate" color="primary" variant="underlined" density="compact" hide-details="auto" clearable></v-text-field>
+                          <v-slider density="compact" v-model="inputLossAmount.lossCutRate" color="primary" hide-details thumb-size="10" :min="0" :max="100" :step="10"></v-slider>
                         </v-col>
                         <v-col cols="6">
-                          <v-text-field label="Entry Price" type="number" v-model="entryPrice" color="primary" variant="underlined" density="compact" hide-details="auto" clearable></v-text-field>
-                          <v-slider density="compact" v-model="entryPrice" color="primary" :min="0" :max="10000" :step="1"></v-slider>
+                          <v-text-field label="Entry price" type="number" v-model="inputLossAmount.entryPrice" color="primary" variant="underlined" density="compact" hide-details="auto" clearable></v-text-field>
+                          <v-slider density="compact" v-model="inputLossAmount.entryPrice" color="primary" hide-details thumb-size="10" :min="0" :max="10000" :step="10"></v-slider>
                         </v-col>
                       </v-row>
                       <v-row dense>
                         <v-col cols="12">
-                          <div class="text-h6 d-flex">
-                            <div>Loss cut line：</div>
-                            <div class="text-right" style="min-width: 100px;border-bottom: 2px solid rgb(var(--v-theme-primary));">{{ lossCutPrice }}</div>
-                          </div>
+                          <v-text-field v-model="lossCutPrice" label="Loss cut line" color="primary" density="compact" variant="solo" readonly></v-text-field>
                         </v-col>
                       </v-row>
                     </v-container>
                   </v-card-text>
                 </v-card>
               </v-col>
+              <!--  -->
               <v-col cols="12" xs="12" sm="12" md="6" lg="4">
-                <v-card title="Profit and loss calculation">
-                  <v-card-text>
+                <v-card>
+                  <v-card-item>
+                    <v-card-subtitle>Profit and loss calculation</v-card-subtitle>
+                  </v-card-item>
+                  <v-card-text class="py-0 px-0">
                     <v-container>
                       <v-row dense>
-                        <v-col cols="12" xs="12" sm="12" md="12" >
-                          <v-switch density="compact" v-model="isShort" label="Short" color="primary" hide-details></v-switch>
+                        <v-col cols="12" xs="12" sm="12" md="12">
+                          <v-switch density="compact" v-model="inputProfitLoss.isShort" label="short" color="primary" hide-details></v-switch>
                         </v-col>
                         <v-col cols="6" xs="6" sm="4" md="4" >
-                          <v-text-field label="Entry Price" type="number" v-model="unitPrice" color="primary" variant="underlined" dense hide-details="auto" clearable></v-text-field>
-                          <v-slider density="compact" v-model="unitPrice" color="primary" :min="0" :max="10000" :step="1"></v-slider>
+                          <v-text-field label="Entry price" type="number" v-model="inputProfitLoss.unitPrice" color="primary" variant="underlined" dense hide-details="auto" clearable></v-text-field>
+                          <v-slider density="compact" v-model="inputProfitLoss.unitPrice" color="primary" hide-details thumb-size="10" :min="0" :max="10000" :step="10"></v-slider>
                         </v-col>
                         <v-col cols="6" xs="6" sm="4" md="4" >
-                          <v-text-field label="Current Price" type="number" v-model="currentPrice" color="primary" variant="underlined" dense hide-details="auto" clearable></v-text-field>
-                          <v-slider density="compact" v-model="currentPrice" color="primary" :min="0" :max="10000" :step="1"></v-slider>
+                          <v-text-field label="Current price" type="number" v-model="inputProfitLoss.currentPrice" color="primary" variant="underlined" dense hide-details="auto" clearable></v-text-field>
+                          <v-slider density="compact" v-model="inputProfitLoss.currentPrice" color="primary" hide-details thumb-size="10" :min="0" :max="10000" :step="10"></v-slider>
                         </v-col>
                         <v-col cols="6" xs="6" sm="4" md="4" >
-                          <v-text-field label="Number of Trade" type="number" v-model="tradeNum" color="primary" variant="underlined" dense hide-details="auto" clearable></v-text-field>
-                          <v-slider density="compact" v-model="tradeNum" color="primary" :min="0" :max="10000" :step="100"></v-slider>
+                          <v-text-field label="Trade shares" type="number" v-model="inputProfitLoss.tradeShares" color="primary" variant="underlined" dense hide-details="auto" clearable></v-text-field>
+                          <v-slider density="compact" v-model="inputProfitLoss.tradeShares" color="primary" hide-details thumb-size="10" :min="0" :max="10000" :step="100"></v-slider>
                         </v-col>
                       </v-row>
                       <v-row align="baseline" dense>
                         <v-col cols="12">
-                          <div class="text-h6 d-flex">
-                            <div>Profit and loss：</div>
-                            <div class="text-right" style="min-width: 100px;border-bottom: 2px solid rgb(var(--v-theme-primary));">{{ profitLoss }}</div>
-                          </div>
+                          <v-text-field v-model="profitLoss" label="Profit and loss" color="primary" density="compact" variant="solo" readonly></v-text-field>
+                        </v-col>
+                      </v-row>
+                    </v-container>
+                  </v-card-text>
+                </v-card>
+              </v-col>
+              <!--  -->
+              <v-col cols="12" xs="12" sm="12" md="6" lg="4">
+                <v-card>
+                  <v-card-item>
+                    <v-card-subtitle>Averaging calculation</v-card-subtitle>
+                  </v-card-item>
+                  <v-card-text class="py-0 px-0">
+                    <v-container>
+                      <v-row dense>
+                        <v-col cols="6">
+                          <v-text-field label="Acquisition price" type="number" v-model="inputAveraging.acquisitionPrice" color="primary" variant="underlined" density="compact" hide-details="auto" clearable></v-text-field>
+                          <v-slider density="compact" v-model="inputAveraging.acquisitionPrice" color="primary" hide-details thumb-size="10" :min="0" :max="10000" :step="10"></v-slider>
+                        </v-col>
+                        <v-col cols="6">
+                          <v-text-field label="Current shares" type="number" v-model="inputAveraging.currentShares" color="primary" variant="underlined" density="compact" hide-details="auto" clearable></v-text-field>
+                          <v-slider density="compact" v-model="inputAveraging.currentShares" color="primary" hide-details thumb-size="10" :min="0" :max="10000" :step="100"></v-slider>
+                        </v-col>
+                      </v-row>
+                      <v-row dense>
+                        <v-col cols="6">
+                          <v-text-field label="Current price" type="number" v-model="inputAveraging.currentPrice" color="primary" variant="underlined" density="compact" hide-details="auto" clearable></v-text-field>
+                          <v-slider density="compact" v-model="inputAveraging.currentPrice" color="primary" hide-details thumb-size="10" :min="0" :max="10000" :step="10"></v-slider>
+                        </v-col>
+                        <v-col cols="6">
+                          <v-text-field label="Trade shares" type="number" v-model="inputAveraging.tradeShares" color="primary" variant="underlined" density="compact" hide-details="auto" clearable></v-text-field>
+                          <v-slider density="compact" v-model="inputAveraging.tradeShares" color="primary" hide-details thumb-size="10" :min="0" :max="10000" :step="100"></v-slider>
+                        </v-col>
+                      </v-row>
+                      <v-row dense>
+                        <v-col cols="6">
+                          <v-text-field v-model="dispAveragePrice" label="Average price" color="primary" density="compact" variant="solo" readonly></v-text-field>
+                        </v-col>
+                        <v-col cols="6">
+                          <v-text-field v-model="dispHoldingShares" label="Holding shares" color="primary" density="compact" variant="solo" readonly></v-text-field>
+                        </v-col>
+                      </v-row>
+                      <v-row dense>
+                        <v-col cols="6">
+                          <v-text-field label="Profit-taking" type="number" v-model="inputAveraging.profitTaking" color="primary" variant="underlined" density="compact" hide-details="auto" clearable></v-text-field>
+                          <v-slider density="compact" v-model="inputAveraging.profitTaking" color="primary" hide-details thumb-size="10" :min="0" :max="10000" :step="10"></v-slider>
+                        </v-col>
+                        <v-col cols="6">
+                          <v-text-field v-model="profit" label="Profit" color="primary" density="compact" variant="solo" readonly></v-text-field>
                         </v-col>
                       </v-row>
                     </v-container>
@@ -91,28 +142,70 @@
       const app = createApp({
         data() {
           return {
-            lossCutRate: 3,
-            entryPrice: 0,
-            unitPrice: 0,
-            currentPrice: 0,
-            tradeNum: 100,
-            isShort: false
+            inputLossAmount: {
+              lossCutRate: 3,
+              entryPrice: 0
+            },
+            inputProfitLoss: {
+              unitPrice: 0,
+              currentPrice: 0,
+              tradeShares: 100,
+              isShort: false
+            },
+            inputAveraging: {
+              acquisitionPrice: 0,
+              currentShares: 0,
+              currentPrice: 0,
+              tradeShares: 0,
+              profitTaking: 0,
+            }
           }
         },
         computed: {
           lossCutPrice() {
-            const price = this.entryPrice * (1 - this.lossCutRate / 100)
+            let {lossCutRate, entryPrice} = this.inputLossAmount;
+            const price = entryPrice * (1 - lossCutRate / 100)
             const rounded = Math.round(price * 100) / 100
             return rounded.toLocaleString()
           },
           profitLoss() {
+            let {unitPrice, currentPrice, tradeShares, isShort} = this.inputProfitLoss;
             let price = 0
-            if (this.isShort) {
-              price = (this.unitPrice * this.tradeNum) - (this.currentPrice * this.tradeNum)
+            if (isShort) {
+              price = (unitPrice * tradeShares) - (currentPrice * tradeShares)
             } else {
-              price = (this.currentPrice * this.tradeNum) - (this.unitPrice * this.tradeNum)
+              price = (currentPrice * tradeShares) - (unitPrice * tradeShares)
             }
             return price.toLocaleString()
+          },
+          averagePrice() {
+            let {currentPrice, acquisitionPrice, currentShares, tradeShares} = this.inputAveraging;
+            const price = this.holdingShares == 0 ? 0 
+                            : ((acquisitionPrice * currentShares) + (currentPrice * tradeShares)) / this.holdingShares;
+            const rounded = Math.round(price);
+            return rounded;
+          },
+          dispAveragePrice() {
+            return this.averagePrice.toLocaleString();
+          },
+          holdingShares() {
+            let {currentShares, tradeShares} = this.inputAveraging;
+            return currentShares + tradeShares;
+          },
+          dispHoldingShares() {
+            return this.holdingShares.toLocaleString();
+          },
+          profit() {
+            let {profitTaking} = this.inputAveraging;
+            const profit = (profitTaking * this.holdingShares) - (this.averagePrice * this.holdingShares);
+            return profit.toLocaleString();
+          }
+        },
+        watch: {
+          'inputAveraging.acquisitionPrice': function() {
+            const value = this.inputAveraging.acquisitionPrice
+            this.inputAveraging.currentPrice = value;
+            this.inputAveraging.profitTaking = value;
           }
         }
       })
