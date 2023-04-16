@@ -163,13 +163,17 @@
         },
         computed: {
           lossCutPrice() {
-            let {lossCutRate, entryPrice} = this.inputLossAmount;
+            const lossCutRate = Number(this.inputLossAmount.lossCutRate);
+            const entryPrice = Number(this.inputLossAmount.entryPrice);
             const price = entryPrice * (1 - lossCutRate / 100)
             const rounded = Math.round(price * 100) / 100
             return rounded.toLocaleString()
           },
           profitLoss() {
-            let {unitPrice, currentPrice, tradeShares, isShort} = this.inputProfitLoss;
+            const unitPrice = Number(this.inputProfitLoss.unitPrice);
+            const currentPrice = Number(this.inputProfitLoss.currentPrice);
+            const tradeShares = Number(this.inputProfitLoss.tradeShares);
+            const isShort = Number(this.inputProfitLoss.isShort);
             let price = 0
             if (isShort) {
               price = (unitPrice * tradeShares) - (currentPrice * tradeShares)
@@ -179,7 +183,10 @@
             return price.toLocaleString()
           },
           averagePrice() {
-            let {currentPrice, acquisitionPrice, currentShares, tradeShares} = this.inputAveraging;
+            const currentPrice = Number(this.inputAveraging.currentPrice);
+            const acquisitionPrice = Number(this.inputAveraging.acquisitionPrice);
+            const currentShares = Number(this.inputAveraging.currentShares);
+            const tradeShares = Number(this.inputAveraging.tradeShares);
             const price = this.holdingShares == 0 ? 0 
                             : ((acquisitionPrice * currentShares) + (currentPrice * tradeShares)) / this.holdingShares;
             const rounded = Math.round(price);
@@ -189,16 +196,26 @@
             return this.averagePrice.toLocaleString();
           },
           holdingShares() {
-            let {currentShares, tradeShares} = this.inputAveraging;
+            const currentShares = Number(this.inputAveraging.currentShares)
+            const tradeShares = Number(this.inputAveraging.tradeShares)
+            console.log(typeof(currentShares), typeof(tradeShares))
             return currentShares + tradeShares;
           },
           dispHoldingShares() {
             return this.holdingShares.toLocaleString();
           },
           profit() {
-            let {profitTaking} = this.inputAveraging;
+            const profitTaking = Number(this.inputAveraging.profitTaking);
             const profit = (profitTaking * this.holdingShares) - (this.averagePrice * this.holdingShares);
             return profit.toLocaleString();
+          }
+        },
+        methods: {
+          toNumber: function(obj) {
+            const newObj = {};
+            Object.keys(obj).forEach(key => {
+              newObj[key] = Number(obj[key]);
+            });
           }
         },
         watch: {
