@@ -56,15 +56,15 @@
                           <v-switch density="compact" v-model="inputProfitLoss.isShort" label="short" color="primary" hide-details></v-switch>
                         </v-col>
                         <v-col cols="6" xs="6" sm="4" md="4" >
-                          <v-text-field label="Entry price" type="number" v-model="inputProfitLoss.unitPrice" color="primary" variant="underlined" dense hide-details="auto" clearable></v-text-field>
-                          <v-slider density="compact" v-model="inputProfitLoss.unitPrice" color="primary" hide-details thumb-size="10" :min="0" :max="10000" :step="10"></v-slider>
+                          <v-text-field label="Entry price" type="number" v-model="inputProfitLoss.entryPrice" color="primary" variant="underlined" dense hide-details="auto" clearable></v-text-field>
+                          <v-slider density="compact" v-model="inputProfitLoss.entryPrice" color="primary" hide-details thumb-size="10" :min="0" :max="10000" :step="10"></v-slider>
                         </v-col>
                         <v-col cols="6" xs="6" sm="4" md="4" >
                           <v-text-field label="Current price" type="number" v-model="inputProfitLoss.currentPrice" color="primary" variant="underlined" dense hide-details="auto" clearable></v-text-field>
                           <v-slider density="compact" v-model="inputProfitLoss.currentPrice" color="primary" hide-details thumb-size="10" :min="0" :max="10000" :step="10"></v-slider>
                         </v-col>
                         <v-col cols="6" xs="6" sm="4" md="4" >
-                          <v-text-field label="Trade shares" type="number" v-model="inputProfitLoss.tradeShares" color="primary" variant="underlined" dense hide-details="auto" clearable></v-text-field>
+                          <v-text-field label="Trade shares" type="number" v-model="inputProfitLoss.tradeShares" color="primary" variant="underlined" dense hide-details="auto" step="100" clearable></v-text-field>
                           <v-slider density="compact" v-model="inputProfitLoss.tradeShares" color="primary" hide-details thumb-size="10" :min="0" :max="10000" :step="100"></v-slider>
                         </v-col>
                       </v-row>
@@ -91,7 +91,7 @@
                           <v-slider density="compact" v-model="inputAveraging.acquisitionPrice" color="primary" hide-details thumb-size="10" :min="0" :max="10000" :step="10"></v-slider>
                         </v-col>
                         <v-col cols="4">
-                          <v-text-field label="Current shares" type="number" v-model="inputAveraging.currentShares" color="primary" variant="underlined" density="compact" hide-details="auto" clearable></v-text-field>
+                          <v-text-field label="Current shares" type="number" v-model="inputAveraging.currentShares" color="primary" variant="underlined" density="compact" hide-details="auto" step="100" clearable></v-text-field>
                           <v-slider density="compact" v-model="inputAveraging.currentShares" color="primary" hide-details thumb-size="10" :min="0" :max="10000" :step="100"></v-slider>
                         </v-col>
                         <v-col cols="4">
@@ -104,7 +104,7 @@
                           <v-slider density="compact" v-model="inputAveraging.currentPrice" color="primary" hide-details thumb-size="10" :min="0" :max="10000" :step="10"></v-slider>
                         </v-col>
                         <v-col cols="4">
-                          <v-text-field label="Trade shares" type="number" v-model="inputAveraging.tradeShares" color="primary" variant="underlined" density="compact" hide-details="auto" clearable></v-text-field>
+                          <v-text-field label="Trade shares" type="number" v-model="inputAveraging.tradeShares" color="primary" variant="underlined" density="compact" hide-details="auto" step="100" clearable></v-text-field>
                           <v-slider density="compact" v-model="inputAveraging.tradeShares" color="primary" hide-details thumb-size="10" :min="0" :max="10000" :step="100"></v-slider>
                         </v-col>
                         <v-col cols="4">
@@ -156,7 +156,7 @@
               entryPrice: 0
             },
             inputProfitLoss: {
-              unitPrice: 0,
+              entryPrice: 0,
               currentPrice: 0,
               tradeShares: 100,
               isShort: false
@@ -179,15 +179,15 @@
             return rounded.toLocaleString()
           },
           profitLoss() {
-            const unitPrice = Number(this.inputProfitLoss.unitPrice);
+            const entryPrice = Number(this.inputProfitLoss.entryPrice);
             const currentPrice = Number(this.inputProfitLoss.currentPrice);
             const tradeShares = Number(this.inputProfitLoss.tradeShares);
             const isShort = Number(this.inputProfitLoss.isShort);
             let price = 0
             if (isShort) {
-              price = (unitPrice * tradeShares) - (currentPrice * tradeShares)
+              price = (entryPrice * tradeShares) - (currentPrice * tradeShares)
             } else {
-              price = (currentPrice * tradeShares) - (unitPrice * tradeShares)
+              price = (currentPrice * tradeShares) - (entryPrice * tradeShares)
             }
             return price.toLocaleString()
           },
@@ -246,9 +246,13 @@
         },
         watch: {
           'inputAveraging.acquisitionPrice': function() {
-            const value = this.inputAveraging.acquisitionPrice
+            const value = this.inputAveraging.acquisitionPrice;
             this.inputAveraging.currentPrice = value;
             this.inputAveraging.profitTaking = value;
+          },
+          'inputProfitLoss.entryPrice': function() {
+            const value = this.inputProfitLoss.entryPrice;
+            this.inputProfitLoss.currentPrice = value;
           }
         }
       })
