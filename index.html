@@ -4,328 +4,381 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trade Calculator</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vuetify@3.1.13/dist/vuetify.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/element-ui@2.15.14/lib/theme-chalk/index.min.css">
     <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
   </head>
   <body>
     <div id="app">
-      <v-app>
-        <v-app-bar color="primary" density="compact">
-          <v-app-bar-title>Trade Calculator</v-app-bar-title>
-        </v-app-bar>
-        <v-main>
-          <v-container fluid>
-            <v-row dense>
-              <!--  -->
-              <v-col cols="12" xs="12" sm="12" md="6" lg="4">
-                <v-card>
-                  <v-card-item>
-                    <v-card-subtitle>Target line calculation</v-card-subtitle>
-                  </v-card-item>
-                  <v-card-text class="py-0 px-0">
-                    <v-container>
-                      <v-row dense>
-                        <v-col cols="4">
-                          <v-text-field label="Entry price" type="number" v-model="inputTargetLine.entryPrice" color="primary" variant="underlined" density="compact" hide-details="true" clearable></v-text-field>
-                          <v-slider density="compact" v-model="inputTargetLine.entryPrice" color="primary" hide-details thumb-size="8" :min="0" :max="10000" :step="10"></v-slider>
-                        </v-col>
-                        <v-col cols="4">
-                          <v-text-field label="Trade shares" type="number" v-model="inputTargetLine.tradeShares" color="primary" variant="underlined" density="compact" hide-details="true" step="100" clearable></v-text-field>
-                          <v-slider density="compact" v-model="inputTargetLine.tradeShares" color="primary" hide-details thumb-size="8" :min="0" :max="10000" :step="100"></v-slider>
-                        </v-col>
-                        <v-col cols="4">
-                          <v-switch density="compact" v-model="inputTargetLine.isShort" label="short" color="primary" hide-details="true" inline="true"></v-switch>
-                        </v-col>
-                      </v-row>
-                      <v-row dense>
-                        <v-col cols="4">
-                          <v-text-field label="Target rate" type="number" v-model="inputTargetLine.targetRate" color="primary" variant="underlined" density="compact" hide-details="true" clearable></v-text-field>
-                          <v-slider density="compact" v-model="inputTargetLine.targetRate" color="primary" hide-details thumb-size="8" :min="0" :max="100" :step="1"></v-slider>
-                        </v-col>
-                        <v-col cols="4">
-                          <v-switch density="compact" v-model="inputTargetLine.useLossCutRate" label="use loss cut rate" color="primary" hide-details="true" inline="true"></v-switch>
-                        </v-col>
-                        <v-col cols="4">
-                          <v-text-field label="Loss cut rate" type="number" v-model="inputTargetLine.lossCutRate" color="primary" variant="underlined" density="compact" hide-details="true" clearable></v-text-field>
-                          <v-slider density="compact" v-model="inputTargetLine.lossCutRate" color="primary" hide-details="true" thumb-size="8" :min="0" :max="100" :step="1"></v-slider>
-                        </v-col>
-                      </v-row>
-                      <v-row dense>
-                        <v-col cols="6">
-                          <v-text-field v-model="outputTargetLineDispTargetPrice" label="Target price" color="primary" density="compact" variant="solo" readonly></v-text-field>
-                        </v-col>
-                        <v-col cols="6">
-                          <v-text-field v-model="outputTargetLineDispProfit" label="Profit" color="primary" density="compact" variant="solo" readonly></v-text-field>
-                        </v-col>
-                      </v-row>
-                      <v-row dense>
-                        <v-col cols="6">
-                          <v-text-field v-model="outputTargetLineDispLossCutPrice" label="Loss cut price" color="primary" density="compact" variant="solo" readonly></v-text-field>
-                        </v-col>
-                        <v-col cols="6">
-                          <v-text-field v-model="outputTargetLineDispLoss" label="Loss" color="primary" density="compact" variant="solo" readonly></v-text-field>
-                        </v-col>
-                      </v-row>
-                    </v-container>
-                  </v-card-text>
-                </v-card>
-              </v-col>
-              <!--  -->
-              <v-col cols="12" xs="12" sm="12" md="6" lg="4">
-                <v-card>
-                  <v-card-item>
-                    <v-card-subtitle>Profit and loss calculation</v-card-subtitle>
-                  </v-card-item>
-                  <v-card-text class="py-0 px-0">
-                    <v-container>
-                      <v-row dense>
-                        <v-col cols="4" >
-                          <v-text-field label="Entry price" type="number" v-model="inputProfitLoss.entryPrice" color="primary" variant="underlined" density="compact" hide-details="true" clearable></v-text-field>
-                          <v-slider density="compact" v-model="inputProfitLoss.entryPrice" color="primary" hide-details="true" thumb-size="8" :min="0" :max="10000" :step="10"></v-slider>
-                        </v-col>
-                        <v-col cols="4" >
-                          <v-text-field label="Trade shares" type="number" v-model="inputProfitLoss.tradeShares" color="primary" variant="underlined" density="compact" hide-details="true" step="100" clearable></v-text-field>
-                          <v-slider density="compact" v-model="inputProfitLoss.tradeShares" color="primary" hide-details="true" thumb-size="8" :min="0" :max="10000" :step="100"></v-slider>
-                        </v-col>
-                        <v-col cols="4">
-                          <v-switch density="compact" v-model="inputProfitLoss.isShort" label="short" color="primary" hide-details="true"></v-switch>
-                        </v-col>
-                        <v-col cols="4" >
-                          <v-text-field label="Current price" type="number" v-model="inputProfitLoss.currentPrice" color="primary" variant="underlined" density="compact" hide-details="true" clearable></v-text-field>
-                          <v-slider density="compact" v-model="inputProfitLoss.currentPrice" color="primary" hide-details="true" thumb-size="8" :min="0" :max="10000" :step="10"></v-slider>
-                        </v-col>
-                        <v-col cols="8">
-                          <v-text-field v-model="profitLoss" label="Profit and loss" color="primary" density="compact" variant="solo" readonly></v-text-field>
-                        </v-col>
-                      </v-row>
-                    </v-container>
-                  </v-card-text>
-                </v-card>
-              </v-col>
-              <!--  -->
-              <v-col cols="12" xs="12" sm="12" md="6" lg="4">
-                <v-card>
-                  <v-card-item>
-                    <v-card-subtitle>Averaging calculation</v-card-subtitle>
-                  </v-card-item>
-                  <v-card-text class="py-0 px-0">
-                    <v-container>
-                      <v-row dense>
-                        <v-col cols="4">
-                          <v-text-field label="Acquisition price" type="number" v-model="inputAveraging.acquisitionPrice" color="primary" variant="underlined" density="compact" hide-details="true" clearable></v-text-field>
-                          <v-slider density="compact" v-model="inputAveraging.acquisitionPrice" color="primary" hide-details="true" thumb-size="8" :min="0" :max="10000" :step="10"></v-slider>
-                        </v-col>
-                        <v-col cols="4">
-                          <v-text-field label="Current shares" type="number" v-model="inputAveraging.currentShares" color="primary" variant="underlined" density="compact" hide-details="true" step="100" clearable></v-text-field>
-                          <v-slider density="compact" v-model="inputAveraging.currentShares" color="primary" hide-details="true" thumb-size="8" :min="0" :max="10000" :step="100"></v-slider>
-                        </v-col>
-                        <v-col cols="4">
-                          <v-text-field v-model="dispBoughtPrice" label="Price" color="primary" density="compact" variant="solo" readonly></v-text-field>
-                        </v-col>
-                      </v-row>
-                      <v-row dense>
-                        <v-col cols="4">
-                          <v-text-field label="Current price" type="number" v-model="inputAveraging.currentPrice" color="primary" variant="underlined" density="compact" hide-details="true" clearable></v-text-field>
-                          <v-slider density="compact" v-model="inputAveraging.currentPrice" color="primary" hide-details="true" thumb-size="8" :min="0" :max="10000" :step="10"></v-slider>
-                        </v-col>
-                        <v-col cols="4">
-                          <v-text-field label="Trade shares" type="number" v-model="inputAveraging.tradeShares" color="primary" variant="underlined" density="compact" hide-details="true" step="100" clearable></v-text-field>
-                          <v-slider density="compact" v-model="inputAveraging.tradeShares" color="primary" hide-details="true" thumb-size="8" :min="0" :max="10000" :step="100"></v-slider>
-                        </v-col>
-                        <v-col cols="4">
-                          <v-text-field v-model="dispBuyingPrice" label="Price" color="primary" density="compact" variant="solo" readonly></v-text-field>
-                        </v-col>
-                      </v-row>
-                      <v-row dense>
-                        <v-col cols="4">
-                          <v-text-field v-model="dispAveragePrice" label="Average price" color="primary" density="compact" variant="solo" readonly></v-text-field>
-                        </v-col>
-                        <v-col cols="4">
-                          <v-text-field v-model="dispHoldingShares" label="Holding shares" color="primary" density="compact" variant="solo" readonly></v-text-field>
-                        </v-col>
-                        <v-col cols="4">
-                          <v-text-field v-model="dispEvaluatedPrice" label="Evaluate price" color="primary" density="compact" variant="solo" readonly></v-text-field>
-                        </v-col>
-                      </v-row>
-                      <v-row dense>
-                        <v-col cols="4">
-                          <v-text-field label="Profit-taking" type="number" v-model="inputAveraging.profitTaking" color="primary" variant="underlined" density="compact" hide-details="true" clearable></v-text-field>
-                          <v-slider density="compact" v-model="inputAveraging.profitTaking" color="primary" hide-details="true" thumb-size="8" :min="0" :max="10000" :step="10"></v-slider>
-                        </v-col>
-                        <v-col cols="8">
-                          <v-text-field v-model="profit" label="Profit" color="primary" density="compact" variant="solo" readonly></v-text-field>
-                        </v-col>
-                      </v-row>
-                    </v-container>
-                  </v-card-text>
-                </v-card>
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-main>
-      </v-app>
+      <el-container>
+        <el-header>
+          <div class="header-title">Trade<br/>Calculator</div>
+        </el-header>
+        <el-container>
+          <el-main>
+            <el-row style="margin-bottom: 20px;">
+              <el-col span="24">
+                <!--  -->
+                <el-card class="box-card" shadow="hover">
+                  <div slot="header" class="clearfix">
+                    <span>逆指値/損益計算</span>
+                  </div>
+                  <div class="card-body">
+                    <el-row style="margin-bottom: 10px">
+                      <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
+                        <el-descriptions direction="vertical" :column="1" size="mini" border>
+                          <el-descriptions-item label="建区分">
+                            <el-switch v-model="inputTargetLine.isShort" active-text="売" inactive-text="買" active-color="#f06060" style="padding-bottom: 8px"></el-switch>
+                          </el-descriptions-item>
+                        </el-descriptions>
+                      </el-col>
+                      <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
+                        <el-descriptions direction="vertical" :column="1" size="mini" border>
+                          <el-descriptions-item label="建単価">
+                            <div class="input-form-num-3step">
+                              <el-input-number v-model="inputTargetLine.entryPrice" size="mini" controls-position="right" class="step-1"></el-input-number>
+                              <span class="label-step label-step-1">+1</span>
+                              <el-input-number v-model="inputTargetLine.entryPrice" size="mini" controls-position="right" :step="10" class="step-10"></el-input-number>
+                              <span class="label-step label-step-10">+10</span>
+                              <el-input-number v-model="inputTargetLine.entryPrice" size="mini" controls-position="right" :step="100" class="step-100"></el-input-number>
+                              <span class="label-step label-step-100">+100</span>
+                            </div>
+                          </el-descriptions-item>
+                        </el-descriptions>
+                      </el-col>
+                      <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
+                        <el-descriptions direction="vertical" :column="1" size="mini" border>
+                          <el-descriptions-item label="数量">
+                            <el-input-number v-model="inputTargetLine.tradeShares" size="mini" controls-position="right" :step="100"></el-input-number>
+                          </el-descriptions-item>
+                        </el-descriptions>
+                      </el-col>
+                      <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
+                        <el-descriptions direction="vertical" :column="1" size="mini" border>
+                              <el-descriptions-item label="ロスカットレート">
+                            <el-input-number v-model="inputTargetLine.lossCutRate" size="mini" controls-position="right"></el-input-number>
+                          </el-descriptions-item>
+                        </el-descriptions>
+                      </el-col>
+                      <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
+                        <el-descriptions direction="vertical" :column="1" size="mini" border>
+                          <el-descriptions-item label="現在値">
+                            <div style="position: relative;">
+                              <div class="input-form-num-3step">
+                                <el-input-number v-model="inputTargetLine.currentPrice" size="mini" controls-position="right" class="step-1"></el-input-number>
+                                <span class="label-step label-step-1">+1</span>
+                                <el-input-number v-model="inputTargetLine.currentPrice" size="mini" controls-position="right" :step="10" class="step-10"></el-input-number>
+                                <span class="label-step label-step-10">+10</span>
+                                <el-input-number v-model="inputTargetLine.currentPrice" size="mini" controls-position="right" :step="100" class="step-100"></el-input-number>
+                                <span class="label-step label-step-100">+100</span>
+                              </div>
+                              <div style="position: absolute;top: -21px;left: 83px;z-index: 4;">
+                                <el-button icon="el-icon-copy-document" size="medium" type="text" @click="copyEntryPrice"></el-button>
+                              </div>
+                            </div>
+                          </el-descriptions-item>
+                        </el-descriptions>
+                      </el-col>
+                    </el-row>
+                    <el-row>
+                      <el-col :xs="24" :sm="8" :md="8" :lg="8" :xl="8">
+                        <el-descriptions :column="1" size="mini" border>
+                          <el-descriptions-item label="ロスカット単価" label-class-name="width-120">
+                            {{ outputTargetLineLossCutPrice.toLocaleString() }}
+                          </el-descriptions-item>
+                        </el-descriptions>
+                      </el-col>
+                      <el-col :xs="24" :sm="8" :md="8" :lg="8" :xl="8">
+                        <el-descriptions :column="1" size="mini" border>
+                          <el-descriptions-item label="利益" label-class-name="width-120">
+                            {{ outputTargetLineProfit.toLocaleString() }}
+                          </el-descriptions-item>
+                        </el-descriptions>
+                      </el-col>
+                      <el-col :xs="24" :sm="8" :md="8" :lg="8" :xl="8">
+                        <el-descriptions :column="1" size="mini" border>
+                          <el-descriptions-item label="損失" label-class-name="width-120">
+                            {{ outputTargetLineLoss.toLocaleString() }}
+                          </el-descriptions-item>
+                        </el-descriptions>
+                      </el-col>
+                    </el-row>
+                  </div>
+                </el-card>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col span="24">
+                <!--  -->
+                <el-card class="box-card" shadow="hover">
+                  <div slot="header" class="clearfix">
+                    <span>難平計算</span>
+                  </div>
+                  <div class="card-body">
+                    <el-row style="margin-bottom: 10px">
+                      <el-col :xs="24" :sm="8" :md="8" :lg="8" :xl="8">
+                        <el-descriptions :column="1" size="mini" border>
+                          <el-descriptions-item label="平均単価" label-class-name="width-120">
+                            {{ outputAveragingPrice.toLocaleString() }}
+                          </el-descriptions-item>
+                        </el-descriptions>
+                      </el-col>
+                      <el-col :xs="24" :sm="8" :md="8" :lg="8" :xl="8">
+                        <el-descriptions :column="1" size="mini" border>
+                          <el-descriptions-item label="数量" label-class-name="width-120">
+                            {{ outputAveragingShares.toLocaleString() }}
+                          </el-descriptions-item>
+                        </el-descriptions>
+                      </el-col>
+                      <el-col :xs="24" :sm="8" :md="8" :lg="8" :xl="8">
+                        <el-descriptions :column="1" size="mini" border>
+                          <el-descriptions-item label="価格" label-class-name="width-120">
+                            {{ outputAveragingAmount.toLocaleString() }}
+                          </el-descriptions-item>
+                        </el-descriptions>
+                      </el-col>
+                    </el-row>
+                    <el-row>
+                      <div class="averaging-calculate-detail">
+                        <table class="averaging-detail">
+                          <thead>
+                            <tr>
+                              <th style="width: 45px;">
+                                <el-button size="mini" round @click="averagingAddRow()"><i class="el-icon-plus"></i></el-button>
+                              </th>
+                              <th style="min-width: 200px;width: 30%;">建単価</th>
+                              <th style="min-width: 130px;width: 30%;">数量</th>
+                              <th style="min-width: 130px;">合計</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr v-for="(item, index) in inputAveraging.data" :key="index">
+                              <td>
+                                <el-row>
+                                  <el-col :span="12">
+                                    <el-button type="text" @click="averagingDeleteRow(index)"><i class="el-icon-delete"></i></el-button>
+                                  </el-col>
+                                  <el-col :span="12">
+                                    <el-button type="text" @click="averagingDuplicateRow(index)"><i class="el-icon-copy-document"></i></el-button>
+                                  </el-col>
+                                </el-row>
+                              </td>
+                              <td>
+                                <div class="input-form-num-3step">
+                                  <el-input-number v-model="item.price" size="mini" controls-position="right" class="step-1" @change="averagingOnChange(index)"></el-input-number>
+                                  <span class="label-step label-step-1">+1</span>
+                                  <el-input-number v-model="item.price" size="mini" controls-position="right" :step="10" class="step-10" @change="averagingOnChange(index)"></el-input-number>
+                                  <span class="label-step label-step-10">+10</span>
+                                  <el-input-number v-model="item.price" size="mini" controls-position="right" :step="100" class="step-100" @change="averagingOnChange(index)"></el-input-number>
+                                  <span class="label-step label-step-100">+100</span>
+                                </div>
+                              </td>
+                              <td>
+                                <el-input-number v-model="item.shares" size="mini" controls-position="right" :step="100" @change="averagingOnChange(index)"></el-input-number>
+                              </td>
+                              <td class="text-right">
+                                <span>{{ item.amount.toLocaleString() }}</span>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </el-row>
+                  </div>
+                </el-card>
+            </el-col>
+          </el-main>
+        </el-container>
+      </el-container>
     </div>
-    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vuetify@3.1.13/dist/vuetify.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.7.11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/element-ui@2.15.14/lib/index.min.js"></script>
+    <script src="//unpkg.com/element-ui/lib/umd/locale/ja.js"></script>
     <script>
-      const { createApp } = Vue
-      const { createVuetify } = Vuetify
+      ELEMENT.locale(ELEMENT.lang.ja)
 
-      const vuetify = createVuetify()
-
-      const app = createApp({
-        data() {
-          return {
-            inputTargetLine: {
-              entryPrice: 0,
-              tradeShares: 100,
-              isShort: false,
-              targetRate: 20,
-              useLossCutRate: false,
-              lossCutRate: 3,
-            },
-            inputProfitLoss: {
-              entryPrice: 0,
-              currentPrice: 0,
-              tradeShares: 100,
-              isShort: false
-            },
-            inputAveraging: {
-              acquisitionPrice: 0,
-              currentShares: 0,
-              currentPrice: 0,
-              tradeShares: 0,
-              profitTaking: 0,
-            }
-          }
+      const data = {
+        inputTargetLine: {
+          isShort: false,
+          entryPrice: 0,
+          tradeShares: 100,
+          lossCutRate: 3,
+          currentPrice: 0
         },
-        computed: {
-          outputTargetLineTargetPrice: function() {
-            const entryPrice = Number(this.inputTargetLine.entryPrice);
-            const targetRate = Number(this.inputTargetLine.targetRate);
-            const isShort = this.inputTargetLine.isShort;
-            const price = isShort ? entryPrice * (1 - targetRate / 100) : entryPrice * (1 + targetRate / 100);
-            return price;
-          },
-          outputTargetLineDispTargetPrice: function() {
-            return this.outputTargetLineTargetPrice.toLocaleString();
-          },
-          outputTargetLineProfit: function() {
-            const entryPrice = Number(this.inputTargetLine.entryPrice);
-            const tradeShares = Number(this.inputTargetLine.tradeShares);
-            const isShort = this.inputTargetLine.isShort;
-            const price = isShort ? (entryPrice * tradeShares) - (this.outputTargetLineTargetPrice * tradeShares)
-                                  : (this.outputTargetLineTargetPrice * tradeShares) - (entryPrice * tradeShares);
-            return price;
-          },
-          outputTargetLineDispProfit: function() {
-            return this.outputTargetLineProfit.toLocaleString();
-          },
-          outputTargetLineLossCutPrice: function() {
-            const entryPrice = Number(this.inputTargetLine.entryPrice);
-            const lossCutRate = Number(this.inputTargetLine.lossCutRate);
-            const targetRate = Number(this.inputTargetLine.targetRate);
-            const isShort = this.inputTargetLine.isShort;
-            const rate = this.inputTargetLine.useLossCutRate ? lossCutRate : targetRate / 2;
-            const price = isShort ? entryPrice * (1 + rate / 100) : entryPrice * (1 - rate / 100);
-            return price;
-          },
-          outputTargetLineDispLossCutPrice: function() {
-            return this.outputTargetLineLossCutPrice.toLocaleString();
-          },
-          outputTargetLineLoss: function() {
-            const entryPrice = Number(this.inputTargetLine.entryPrice);
-            const tradeShares = Number(this.inputTargetLine.tradeShares);
-            const isShort = this.inputTargetLine.isShort;
-            const price = isShort ? (this.outputTargetLineLossCutPrice * tradeShares) - (entryPrice * tradeShares) 
-                                  : (entryPrice * tradeShares) - (this.outputTargetLineLossCutPrice * tradeShares);
-            return price;
-          },
-          outputTargetLineDispLoss: function() {
-            return this.outputTargetLineLoss.toLocaleString();
-          },
-          lossCutPrice() {
-            const lossCutRate = Number(this.inputLossAmount.lossCutRate);
-            const entryPrice = Number(this.inputLossAmount.entryPrice);
-            const price = entryPrice * (1 - lossCutRate / 100)
-            const rounded = Math.round(price * 100) / 100
-            return rounded.toLocaleString()
-          },
-          profitLoss() {
-            const entryPrice = Number(this.inputProfitLoss.entryPrice);
-            const currentPrice = Number(this.inputProfitLoss.currentPrice);
-            const tradeShares = Number(this.inputProfitLoss.tradeShares);
-            const isShort = Number(this.inputProfitLoss.isShort);
-            const price = isShort ? (entryPrice * tradeShares) - (currentPrice * tradeShares)
-                                  : (currentPrice * tradeShares) - (entryPrice * tradeShares);
-            return price.toLocaleString()
-          },
-          boughtPrice() {
-            const acquisitionPrice = Number(this.inputAveraging.acquisitionPrice);
-            const currentShares = Number(this.inputAveraging.currentShares);
-            return acquisitionPrice * currentShares;
-          },
-          dispBoughtPrice() {
-            return this.boughtPrice.toLocaleString();
-          },
-          buyingPrice() {
-            const currentPrice = Number(this.inputAveraging.currentPrice);
-            const tradeShares = Number(this.inputAveraging.tradeShares);
-            return currentPrice * tradeShares;
-          },
-          dispBuyingPrice() {
-            return this.buyingPrice.toLocaleString();
-          },
-          evaluatedPrice() {
-            return this.averagePrice * this.holdingShares;
-          },
-          dispEvaluatedPrice() {
-            return this.evaluatedPrice.toLocaleString();
-          },
-          averagePrice() {
-            const price = this.holdingShares == 0 ? 0 
-                            : (this.boughtPrice + this.buyingPrice) / this.holdingShares;
-            const rounded = Math.round(price);
-            return rounded;
-          },
-          dispAveragePrice() {
-            return this.averagePrice.toLocaleString();
-          },
-          holdingShares() {
-            const currentShares = Number(this.inputAveraging.currentShares)
-            const tradeShares = Number(this.inputAveraging.tradeShares)
-            return currentShares + tradeShares;
-          },
-          dispHoldingShares() {
-            return this.holdingShares.toLocaleString();
-          },
-          profit() {
-            const profitTaking = Number(this.inputAveraging.profitTaking);
-            const profit = (profitTaking * this.holdingShares) - this.evaluatedPrice;
-            return profit.toLocaleString();
-          }
-        },
-        methods: {
-          toNumber: function(obj) {
-            const newObj = {};
-            Object.keys(obj).forEach(key => {
-              newObj[key] = Number(obj[key]);
-            });
-          }
-        },
-        watch: {
-          'inputAveraging.acquisitionPrice': function() {
-            const value = this.inputAveraging.acquisitionPrice;
-            this.inputAveraging.currentPrice = value;
-            this.inputAveraging.profitTaking = value;
-          },
-          'inputProfitLoss.entryPrice': function() {
-            const value = this.inputProfitLoss.entryPrice;
-            this.inputProfitLoss.currentPrice = value;
-          }
+        inputAveraging: {
+          data: []
         }
+      }
+
+      const computed = {
+        outputTargetLineLossCutPrice: function() {
+          const isShort = this.inputTargetLine.isShort;
+          const entryPrice = Number(this.inputTargetLine.entryPrice);
+          const lossCutRate = Number(this.inputTargetLine.lossCutRate);
+          const price = isShort ? entryPrice * (1 + lossCutRate / 100) : entryPrice * (1 - lossCutRate / 100);
+          return price;
+        },
+        outputTargetLineLoss: function() {
+          const isShort = this.inputTargetLine.isShort;
+          const entryPrice = Number(this.inputTargetLine.entryPrice);
+          const tradeShares = Number(this.inputTargetLine.tradeShares);
+          const price = isShort ? (this.outputTargetLineLossCutPrice * tradeShares) - (entryPrice * tradeShares) 
+                                : (entryPrice * tradeShares) - (this.outputTargetLineLossCutPrice * tradeShares);
+          return price;
+        },
+        outputTargetLineProfit: function() {
+          const isShort = this.inputTargetLine.isShort;
+          const entryPrice = Number(this.inputTargetLine.entryPrice);
+          const tradeShares = Number(this.inputTargetLine.tradeShares);
+          const currentPrice = Number(this.inputTargetLine.currentPrice);
+          const price = isShort ? (entryPrice * tradeShares) - (currentPrice * tradeShares)
+                                : (currentPrice * tradeShares) - (entryPrice * tradeShares);
+          return price;
+        },
+        outputAveragingPrice: function() {
+          if (this.inputAveraging.data.length == 0) return 0;
+
+          const amount = this.inputAveraging.data.reduce(function(sum, data) {
+                            return sum + data.amount;
+                          }, 0);
+          const shares = this.inputAveraging.data.reduce(function(sum, data) {
+                            return sum + data.shares;
+                          }, 0);
+          if (amount == 0 || shares == 0) return 0;
+          return amount / shares;
+        },
+        outputAveragingShares: function() {
+          return this.inputAveraging.data.reduce(function(sum, data) {
+            return sum + data.shares;
+          }, 0);
+        },
+        outputAveragingAmount: function() {
+          return this.inputAveraging.data.reduce(function(sum, data) {
+            return sum + data.amount;
+          }, 0);
+        }
+      }
+
+      const methods = {
+        copyEntryPrice: function() {
+          const value = this.inputTargetLine.entryPrice;
+          this.inputTargetLine.currentPrice = value;
+        },
+        averagingAddRow: function() {
+          this.inputAveraging.data.push({ price: 0, shares: 0, amount: 0 });
+        },
+        averagingDeleteRow: function(index) {
+          this.inputAveraging.data.splice(index, 1);
+        },
+        averagingOnChange: function(index) {
+          const data = this.inputAveraging.data[index];
+          data.amount = Number(data.price) * Number(data.shares);
+        },
+        averagingDuplicateRow: function(index) {
+          const data = this.inputAveraging.data[index];
+          this.inputAveraging.data.push({ price: data.price, shares: data.shares, amount: data.amount });
+        }
+      }
+
+      const watch = {
+      }
+
+      const vm = new Vue({
+        el: '#app',
+        data: data,
+        computed: computed,
+        methods: methods,
+        watch: watch
       })
-      app.use(vuetify).mount('#app')
     </script>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",sans-serif;
+        line-height: 1;
+      }
+      .el-header {
+        background-color: #fff;
+        height: 60px;
+        width: 100%;
+        box-shadow: 0 10px 17.5px 0.5px rgba(0,0,0,.1);
+        transition: box-shadow .3s ease-in-out;
+        position: fixed;
+        top: 0;
+        right: 0;
+        left: 0;
+        z-index: 999;
+      }
+      .el-header>.header-title {
+        font-size: x-large;
+        font-weight: bold;
+        width: 100px;
+        position: absolute;
+        top: 4px;
+      }
+      .el-main {
+        margin-top: 60px;
+      }
+      .el-card__body {
+        background-color: #f5f5f5;
+      }
+
+      .input-form-num-3step {
+        position: relative;
+      }
+      .input-form-num-3step>.step-1 {
+        z-index: 3;
+      }
+      .input-form-num-3step>.step-10 {
+        z-index: 2;
+        position: absolute;
+        left: 29px;
+      }
+      .input-form-num-3step>.step-100 {
+        z-index: 1;
+        position: absolute;
+        left: 58px;
+      }
+      .input-form-num-3step>.label-step {
+        position: absolute;
+        font-size: 0.5em;
+        top: -12px;
+        white-space: nowrap;
+      }
+      .input-form-num-3step>.label-step-1 {
+        left: 109px;
+      }
+      .input-form-num-3step>.label-step-10 {
+        left: 135px;
+      }
+      .input-form-num-3step>.label-step-100 {
+        left: 161px;
+      }
+      .width-120 {
+        width: 120px;
+      }
+      .text-right {
+        text-align: right;
+      }
+      .averaging-calculate-detail {
+        width: calc(80vw);
+        overflow-y: auto;
+        padding: 0;
+        margin: 0;
+        font-size: 12px;
+      }
+      .averaging-detail {
+        padding: 8px;
+        margin: 0;
+      }
+      .averaging-detail th {
+        font-weight: 400;
+        color: #909399;
+      }
+      .averaging-detail td {
+        color: #606266;
+      }
+    </style>
   </body>
 </html>
