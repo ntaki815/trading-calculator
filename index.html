@@ -26,8 +26,8 @@
                     <el-row style="margin-bottom: 10px">
                       <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
                         <el-descriptions direction="vertical" :column="1" size="mini" border>
-                          <el-descriptions-item label="建区分">
-                            <el-switch v-model="inputTargetLine.isShort" active-text="売" inactive-text="買" active-color="#f06060" style="padding-bottom: 8px"></el-switch>
+                          <el-descriptions-item label="建区分" :content-style="{'padding-bottom': '13px'}">
+                            <el-switch v-model="inputTargetLine.isShort" active-text="売" inactive-text="買" active-color="#f06060"></el-switch>
                           </el-descriptions-item>
                         </el-descriptions>
                       </el-col>
@@ -35,12 +35,20 @@
                         <el-descriptions direction="vertical" :column="1" size="mini" border>
                           <el-descriptions-item label="建単価">
                             <div class="input-form-num-3step">
-                              <el-input-number v-model="inputTargetLine.entryPrice" size="mini" controls-position="right" class="step-1"></el-input-number>
-                              <span class="label-step label-step-1">+1</span>
-                              <el-input-number v-model="inputTargetLine.entryPrice" size="mini" controls-position="right" :step="10" class="step-10"></el-input-number>
-                              <span class="label-step label-step-10">+10</span>
-                              <el-input-number v-model="inputTargetLine.entryPrice" size="mini" controls-position="right" :step="100" class="step-100"></el-input-number>
-                              <span class="label-step label-step-100">+100</span>
+                              <div class="ex-input-number ex-input-number--mini ex-is-controls-right">
+                                <span class="ex-input-number__decrease ex-input-number-first__decrease" @click="decreaseNumber('inputTargetLine', 'entryPrice', 1)"><i class="el-icon-arrow-down"></i></span>
+                                <span class="ex-input-number__increase ex-input-number-first__increase" @click="increaseNumber('inputTargetLine', 'entryPrice', 1)"><i class="el-icon-arrow-up"></i></span>
+                                <span class="ex-input-number-label ex-input-number-label-first">+1</span>
+                                <span class="ex-input-number__decrease ex-input-number-second__decrease" @click="decreaseNumber('inputTargetLine', 'entryPrice', 10)"><i class="el-icon-arrow-down"></i></span>
+                                <span class="ex-input-number__increase ex-input-number-second__increase" @click="increaseNumber('inputTargetLine', 'entryPrice', 10)"><i class="el-icon-arrow-up"></i></span>
+                                <span class="ex-input-number-label ex-input-number-label-second">+10</span>
+                                <span class="ex-input-number__decrease ex-input-number-third__decrease" @click="decreaseNumber('inputTargetLine', 'entryPrice', 100)"><i class="el-icon-arrow-down"></i></span>
+                                <span class="ex-input-number__increase ex-input-number-third__increase" @click="increaseNumber('inputTargetLine', 'entryPrice', 100)"><i class="el-icon-arrow-up"></i></span>
+                                <span class="ex-input-number-label ex-input-number-label-third">+100</span>
+                                <div class="ex-input ex-input--mini">
+                                  <input type="text" autocomplete="off" class="ex-input__inner" v-model="inputTargetLine.entryPrice">
+                                </div>
+                              </div>
                             </div>
                           </el-descriptions-item>
                         </el-descriptions>
@@ -48,7 +56,7 @@
                       <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
                         <el-descriptions direction="vertical" :column="1" size="mini" border>
                           <el-descriptions-item label="数量">
-                            <el-input-number v-model="inputTargetLine.tradeShares" size="mini" controls-position="right" :step="100"></el-input-number>
+                            <el-input-number v-model="inputTargetLine.tradeShares" size="mini" controls-position="right" :step="100" :min="0"></el-input-number>
                           </el-descriptions-item>
                         </el-descriptions>
                       </el-col>
@@ -59,17 +67,27 @@
                           </el-descriptions-item>
                         </el-descriptions>
                       </el-col>
+                    </el-row>
+                    <el-row style="margin-bottom: 10px">
                       <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
                         <el-descriptions direction="vertical" :column="1" size="mini" border>
                           <el-descriptions-item label="現在値">
                             <div style="position: relative;">
                               <div class="input-form-num-3step">
-                                <el-input-number v-model="inputTargetLine.currentPrice" size="mini" controls-position="right" class="step-1"></el-input-number>
-                                <span class="label-step label-step-1">+1</span>
-                                <el-input-number v-model="inputTargetLine.currentPrice" size="mini" controls-position="right" :step="10" class="step-10"></el-input-number>
-                                <span class="label-step label-step-10">+10</span>
-                                <el-input-number v-model="inputTargetLine.currentPrice" size="mini" controls-position="right" :step="100" class="step-100"></el-input-number>
-                                <span class="label-step label-step-100">+100</span>
+                                <div class="ex-input-number ex-input-number--mini ex-is-controls-right">
+                                  <span class="ex-input-number__decrease ex-input-number-first__decrease" @click="decreaseNumber('inputTargetLine', 'currentPrice', 1)"><i class="el-icon-arrow-down"></i></span>
+                                  <span class="ex-input-number__increase ex-input-number-first__increase" @click="increaseNumber('inputTargetLine', 'currentPrice', 1)"><i class="el-icon-arrow-up"></i></span>
+                                  <span class="ex-input-number-label ex-input-number-label-first">+1</span>
+                                  <span class="ex-input-number__decrease ex-input-number-second__decrease" @click="decreaseNumber('inputTargetLine', 'currentPrice', 10)"><i class="el-icon-arrow-down"></i></span>
+                                  <span class="ex-input-number__increase ex-input-number-second__increase" @click="increaseNumber('inputTargetLine', 'currentPrice', 10)"><i class="el-icon-arrow-up"></i></span>
+                                  <span class="ex-input-number-label ex-input-number-label-second">+10</span>
+                                  <span class="ex-input-number__decrease ex-input-number-third__decrease" @click="decreaseNumber('inputTargetLine', 'currentPrice', 100)"><i class="el-icon-arrow-down"></i></span>
+                                  <span class="ex-input-number__increase ex-input-number-third__increase" @click="increaseNumber('inputTargetLine', 'currentPrice', 100)"><i class="el-icon-arrow-up"></i></span>
+                                  <span class="ex-input-number-label ex-input-number-label-third">+100</span>
+                                  <div class="ex-input ex-input--mini">
+                                    <input type="text" autocomplete="off" class="ex-input__inner" v-model="inputTargetLine.currentPrice">
+                                  </div>
+                                </div>
                               </div>
                               <div style="position: absolute;top: -21px;left: 83px;z-index: 4;">
                                 <el-button icon="el-icon-copy-document" size="medium" type="text" @click="copyEntryPrice"></el-button>
@@ -164,16 +182,24 @@
                               </td>
                               <td>
                                 <div class="input-form-num-3step">
-                                  <el-input-number v-model="item.price" size="mini" controls-position="right" class="step-1" @change="averagingOnChange(index)"></el-input-number>
-                                  <span class="label-step label-step-1">+1</span>
-                                  <el-input-number v-model="item.price" size="mini" controls-position="right" :step="10" class="step-10" @change="averagingOnChange(index)"></el-input-number>
-                                  <span class="label-step label-step-10">+10</span>
-                                  <el-input-number v-model="item.price" size="mini" controls-position="right" :step="100" class="step-100" @change="averagingOnChange(index)"></el-input-number>
-                                  <span class="label-step label-step-100">+100</span>
+                                  <div class="ex-input-number ex-input-number--mini ex-is-controls-right">
+                                    <span class="ex-input-number__decrease ex-input-number-first__decrease" @click="decreaseAveragingRowNumber(index, 1)"><i class="el-icon-arrow-down"></i></span>
+                                    <span class="ex-input-number__increase ex-input-number-first__increase" @click="increaseAveragingRowNumber(index, 1)"><i class="el-icon-arrow-up"></i></span>
+                                    <span class="ex-input-number-label ex-input-number-label-first">+1</span>
+                                    <span class="ex-input-number__decrease ex-input-number-second__decrease" @click="decreaseAveragingRowNumber(index, 10)"><i class="el-icon-arrow-down"></i></span>
+                                    <span class="ex-input-number__increase ex-input-number-second__increase" @click="increaseAveragingRowNumber(index, 10)"><i class="el-icon-arrow-up"></i></span>
+                                    <span class="ex-input-number-label ex-input-number-label-second">+10</span>
+                                    <span class="ex-input-number__decrease ex-input-number-third__decrease" @click="decreaseAveragingRowNumber(index, 100)"><i class="el-icon-arrow-down"></i></span>
+                                    <span class="ex-input-number__increase ex-input-number-third__increase" @click="increaseAveragingRowNumber(index, 100)"><i class="el-icon-arrow-up"></i></span>
+                                    <span class="ex-input-number-label ex-input-number-label-third">+100</span>
+                                    <div class="ex-input ex-input--mini">
+                                      <input type="text" autocomplete="off" class="ex-input__inner" v-model="item.price" @change="averagingOnChange(index)">
+                                    </div>
+                                  </div>
                                 </div>
                               </td>
                               <td>
-                                <el-input-number v-model="item.shares" size="mini" controls-position="right" :step="100" @change="averagingOnChange(index)"></el-input-number>
+                                <el-input-number v-model="item.shares" size="mini" controls-position="right" :step="100" :min="0" @change="averagingOnChange(index)"></el-input-number>
                               </td>
                               <td class="text-right">
                                 <span>{{ item.amount.toLocaleString() }}</span>
@@ -276,6 +302,36 @@
         averagingDuplicateRow: function(index) {
           const data = this.inputAveraging.data[index];
           this.inputAveraging.data.push({ price: data.price, shares: data.shares, amount: data.amount });
+        },
+        increaseNumber: function(rootPropertyName, propertyName, step) {
+          let obj = this;
+          if (rootPropertyName != '') {
+            obj = this[rootPropertyName]
+          }
+          const value = obj[propertyName];
+          const calcedValue = value + step;
+          this.$set(obj, propertyName, calcedValue);
+        },
+        decreaseNumber: function(rootPropertyName, propertyName, step) {
+          let obj = this;
+          if (rootPropertyName != '') {
+            obj = this[rootPropertyName]
+          }
+          const value = obj[propertyName];
+          const calcedValue = value - step < 0 ? 0 : value - step;
+          this.$set(obj, propertyName, calcedValue);
+        },
+        increaseAveragingRowNumber: function(index, step) {
+          let obj = this.inputAveraging.data[index];
+          obj.price += step;
+          obj.amount = obj.price * obj.shares;
+          this.$set(this.inputAveraging.data, index, obj);
+        },
+        decreaseAveragingRowNumber: function(index, step) {
+          let obj = this.inputAveraging.data[index];
+          obj.price = obj.price - step < 0 ? 0 : obj.price - step;
+          obj.amount = obj.price * obj.shares;
+          this.$set(this.inputAveraging.data, index, obj);
         }
       }
 
@@ -323,37 +379,132 @@
       .el-card__body {
         background-color: #f5f5f5;
       }
-
-      .input-form-num-3step {
+      .ex-input-number--mini {
+        width: 186px;
+        line-height: 26px;
+      }
+      .ex-input-number {
         position: relative;
+        display: inline-block;
       }
-      .input-form-num-3step>.step-1 {
-        z-index: 3;
+      .ex-input-number.ex-is-controls-right {
+        line-height: 13px;
       }
-      .input-form-num-3step>.step-10 {
-        z-index: 2;
+      .ex-input-number.ex-is-controls-right .ex-input-number__decrease.ex-input-number-first__decrease {
+        right: 57px;
+      }
+      .ex-input-number.ex-is-controls-right .ex-input-number__decrease.ex-input-number-second__decrease {
+        right: 29px;
+      }
+      .ex-input-number.ex-is-controls-right .ex-input-number__decrease.ex-input-number-third__decrease {
+        right: 1px;
+        border-radius: 0 0 4px;
+      }
+      .ex-input-number.ex-is-controls-right .ex-input-number__decrease {
+        bottom: 1px;
+        top: auto;
+        left: auto;
+        border-right: none;
+        border-left: 1px solid #DCDFE6;
+      }
+      .ex-input-number.ex-is-controls-right .ex-input-number__increase.ex-input-number-first__increase {
+        right: 57px;
+      }
+      .ex-input-number.ex-is-controls-right .ex-input-number__increase.ex-input-number-second__increase {
+        right: 29px;
+      }
+      .ex-input-number.ex-is-controls-right .ex-input-number__increase.ex-input-number-third__increase {
+        right: 1px;
+        border-radius: 0 4px 0 0;
+      }
+      .ex-input-number.ex-is-controls-right .ex-input-number__increase {
+        top: 1px;
+        border-bottom: 1px solid #DCDFE6;
+        border-left: 1px solid #DCDFE6;
+      }
+      .ex-input-number.ex-is-controls-right .ex-input-number__decrease, .ex-input-number.ex-is-controls-right .ex-input-number__increase {
+        height: auto;
+      }
+      .ex-input-number--mini .ex-input-number__decrease, .ex-input-number--mini .ex-input-number__increase {
+        width: 28px;
+        font-size: 12px;
+      }
+      .ex-input-number__decrease, .ex-input-number__increase {
         position: absolute;
-        left: 29px;
-      }
-      .input-form-num-3step>.step-100 {
         z-index: 1;
+        text-align: center;
+        background: #F5F7FA;
+        color: #606266;
+        cursor: pointer;
+      }
+      .ex-input-number__decrease:hover, .ex-input-number__increase:hover {
+        color: #409EFF;
+      }
+      .ex-input-number__decrease:hover ~ .ex-input .ex-input__inner, .ex-input-number__increase:hover ~ .ex-input .ex-input__inner {
+        border-color: #409EFF;
+        outline: 0;
+      }
+      .ex-input-number.ex-is-controls-right .ex-input-number-label.ex-input-number-label-first {
+        right: 65px;
+      }
+      .ex-input-number.ex-is-controls-right .ex-input-number-label.ex-input-number-label-second {
+        right: 34px;
+      }
+      .ex-input-number.ex-is-controls-right .ex-input-number-label.ex-input-number-label-third {
+        right: 3px;
+      }
+      .ex-input-number.ex-is-controls-right .ex-input-number-label {
         position: absolute;
-        left: 58px;
+        z-index: 2;
+        top: -7px;
+        font-size: 2px;
+        color: #606266;
+        pointer-events: none;
       }
-      .input-form-num-3step>.label-step {
-        position: absolute;
-        font-size: 0.5em;
-        top: -12px;
-        white-space: nowrap;
+      .ex-input-number .ex-input {
+        display: block;
       }
-      .input-form-num-3step>.label-step-1 {
-        left: 109px;
+      .ex-input--mini {
+        font-size: 12px;
       }
-      .input-form-num-3step>.label-step-10 {
-        left: 135px;
+      .ex-input {
+        position: relative;
+        width: 100%;
       }
-      .input-form-num-3step>.label-step-100 {
-        left: 161px;
+      .ex-input-number.ex-is-controls-right .ex-input__inner {
+        padding-left: 15px;
+        padding-right: 106px;
+      }
+      .ex-input--mini .ex-input__inner {
+        height: 28px;
+        line-height: 28px;
+      }
+      .ex-input-number .ex-input__inner {
+        appearance: none;
+        -webkit-appearance: none;
+        text-align: center;
+      }
+      .ex-input__inner {
+        background-color: #FFF;
+        background-image: none;
+        border-radius: 4px;
+        border: 1px solid #DCDFE6;
+        box-sizing: border-box;
+        color: #606266;
+        display: inline-block;
+        outline: 0;
+        padding: 0 15px;
+        -webkit-transition: border-color .2s cubic-bezier(.645,.045,.355,1);
+        transition: border-color .2s cubic-bezier(.645,.045,.355,1);
+        width: 100%;
+        font-size: inherit;
+      }
+      .ex-input__inner:hover {
+        border-color: #C0C4CC;
+      }
+      .ex-input__inner:focus {
+        border-color: #409EFF;
+        outline: 0;
       }
       .width-120 {
         width: 120px;
