@@ -308,7 +308,7 @@
           if (rootPropertyName != '') {
             obj = this[rootPropertyName]
           }
-          const value = obj[propertyName];
+          const value = Number(obj[propertyName]);
           const calcedValue = value + step;
           this.$set(obj, propertyName, calcedValue);
         },
@@ -317,20 +317,20 @@
           if (rootPropertyName != '') {
             obj = this[rootPropertyName]
           }
-          const value = obj[propertyName];
+          const value = Number(obj[propertyName]);
           const calcedValue = value - step < 0 ? 0 : value - step;
           this.$set(obj, propertyName, calcedValue);
         },
         increaseAveragingRowNumber: function(index, step) {
           let obj = this.inputAveraging.data[index];
-          obj.price += step;
-          obj.amount = obj.price * obj.shares;
+          obj.price = Number(obj.price) + step;
+          obj.amount = Number(obj.price) * Number(obj.shares);
           this.$set(this.inputAveraging.data, index, obj);
         },
         decreaseAveragingRowNumber: function(index, step) {
           let obj = this.inputAveraging.data[index];
-          obj.price = obj.price - step < 0 ? 0 : obj.price - step;
-          obj.amount = obj.price * obj.shares;
+          obj.price = Number(obj.price) - step < 0 ? 0 : Number(obj.price) - step;
+          obj.amount = Number(obj.price) * Number(obj.shares);
           this.$set(this.inputAveraging.data, index, obj);
         }
       }
