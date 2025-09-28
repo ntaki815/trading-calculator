@@ -39,67 +39,78 @@
         }
         input[type="number"] {
             -moz-appearance: textfield;
+            /* 入力文字を中央に寄せる */
             text-align: center; 
+        }
+        
+        /* [追加] モバイルでのダブルタップズームを無効化する */
+        .no-zoom-btn {
+            touch-action: manipulation;
         }
     </style>
 </head>
-<body class="p-3 sm:p-4 md:p-6">
+<!-- 全体パディングを p-3 から p-2 に縮小 -->
+<body class="p-2 sm:p-4 md:p-6"> 
 
     <div class="max-w-4xl mx-auto">
 
         <!-- ヘッダーとトグルボタン -->
-        <header class="mb-4 space-y-4">
-            <h1 class="text-3xl font-extrabold text-gray-800 text-center">難平計算</h1>
+        <!-- マージンを mb-4 から mb-3 に縮小 -->
+        <header class="mb-3 space-y-3">
+            <h1 class="text-2xl font-extrabold text-gray-800 text-center">難平計算</h1>
 
             <!-- ショート/ロング トグルボタン -->
             <div id="typeToggle" class="flex p-1 bg-white rounded-lg shadow-md w-full max-w-sm mx-auto cursor-pointer">
-                <div id="longBtn" data-type="long" class="flex-1 text-center py-2 px-4 rounded-md font-semibold transition-all duration-300 text-white bg-primary shadow-sm">
+                <div id="longBtn" data-type="long" class="flex-1 text-center py-2 px-4 rounded-md font-semibold transition-all duration-300 text-white bg-primary shadow-sm text-sm">
                     ロング (買い)
                 </div>
-                <div id="shortBtn" data-type="short" class="flex-1 text-center py-2 px-4 rounded-md font-semibold transition-all duration-300 text-gray-500 hover:bg-bg-light">
+                <div id="shortBtn" data-type="short" class="flex-1 text-center py-2 px-4 rounded-md font-semibold transition-all duration-300 text-gray-500 hover:bg-bg-light text-sm">
                     ショート (売り)
                 </div>
             </div>
         </header>
 
         <!-- サマリー表示エリア -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
-            <div class="bg-white p-4 rounded-lg shadow-md border-l-4 border-primary">
+        <!-- マージンを mb-6 から mb-3 に縮小 -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3"> 
+            <!-- カード内パディングを py-3 px-4 に維持 (前回調整分) -->
+            <div class="bg-white py-3 px-4 rounded-lg shadow-md border-l-4 border-primary">
                 <p class="text-sm font-medium text-gray-500">平均単価</p>
-                <p id="avgPriceDisplay" class="text-2xl font-bold text-gray-800 mt-1">--</p>
+                <p id="avgPriceDisplay" class="text-xl font-bold text-gray-800 mt-1">--</p> <!-- フォントサイズを縮小 -->
             </div>
-            <div class="bg-white p-4 rounded-lg shadow-md border-l-4 border-primary">
+            <div class="bg-white py-3 px-4 rounded-lg shadow-md border-l-4 border-primary">
                 <p class="text-sm font-medium text-gray-500">合計数量</p>
-                <p id="totalQuantityDisplay" class="text-2xl font-bold text-gray-800 mt-1">--</p>
+                <p id="totalQuantityDisplay" class="text-xl font-bold text-gray-800 mt-1">--</p> <!-- フォントサイズを縮小 -->
             </div>
-            <div class="bg-white p-4 rounded-lg shadow-md border-l-4 border-primary">
+            <div class="bg-white py-3 px-4 rounded-lg shadow-md border-l-4 border-primary">
                 <p class="text-sm font-medium text-gray-500">合計金額</p>
-                <p id="totalValueDisplay" class="text-2xl font-bold text-gray-800 mt-1">--</p>
+                <p id="totalValueDisplay" class="text-xl font-bold text-gray-800 mt-1">--</p> <!-- フォントサイズを縮小 -->
             </div>
         </div>
         
         <!-- 利確目標と損益エリア -->
-        <div class="bg-white p-4 rounded-lg shadow-md mb-6">
-            <h2 class="text-xl font-semibold mb-3 text-gray-700">利確目標シミュレーション</h2>
+        <!-- マージンを mb-6 から mb-3 に縮小 -->
+        <div class="bg-white p-4 rounded-lg shadow-md mb-3"> 
+            <h2 class="text-lg font-semibold mb-3 text-gray-700">利確目標シミュレーション</h2> <!-- フォントサイズを縮小 -->
             <div class="flex flex-col sm:flex-row items-center gap-4">
                 <div class="flex-1 w-full">
                     <label for="targetPrice" class="block text-sm font-medium text-gray-700 mb-1">利確予定価格</label>
                     <input type="number" id="targetPrice" oninput="calculateProfitLoss()" placeholder="価格を入力"
-                           class="w-full py-2 px-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary">
+                           class="w-full py-2 px-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary text-sm"> <!-- テキストサイズを縮小 -->
                 </div>
                 <div class="flex-1 w-full mt-2 sm:mt-0">
                     <p class="text-sm font-medium text-gray-500 mb-1">想定損益 (P&L)</p>
-                    <p id="profitLossDisplay" class="text-2xl font-bold mt-1 text-gray-800">--</p>
+                    <p id="profitLossDisplay" class="text-xl font-bold mt-1 text-gray-800">--</p> <!-- フォントサイズを縮小 -->
                 </div>
             </div>
         </div>
 
 
         <!-- 取引入力テーブル -->
-        <div class="bg-white p-4 rounded-lg shadow-md">
+        <div class="bg-white p-4 rounded-lg shadow-md"> 
             <div id="transactionTable">
                 <!-- テーブルヘッダー (PC/タブレット用) -->
-                <div class="hidden sm:grid grid-cols-12 gap-2 text-sm font-semibold text-gray-600 border-b pb-2 mb-3">
+                <div class="hidden sm:grid grid-cols-12 gap-2 text-sm font-semibold text-gray-600 border-b pb-2 mb-2"> <!-- mb-3からmb-2に縮小 -->
                     <div class="col-span-4 text-center">価格</div>
                     <div class="col-span-4 text-center">数量 (100単位)</div>
                     <div class="col-span-3 text-right">合計金額</div>
@@ -107,14 +118,14 @@
                 </div>
 
                 <!-- 取引行がここに追加される -->
-                <div id="transactionsContainer" class="space-y-3">
+                <div id="transactionsContainer" class="space-y-2"> <!-- 行間を space-y-3 から space-y-2 に縮小 -->
                     <!-- 初期行はJavaScriptで追加 -->
                 </div>
             </div>
 
             <!-- 行追加ボタン -->
-            <button id="addRowBtn" class="w-full mt-4 py-2 px-4 bg-bg-light text-primary font-semibold rounded-lg border border-primary-dark/20 hover:bg-primary/10 transition duration-150 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+            <button id="addRowBtn" class="w-full mt-3 py-2 px-4 bg-bg-light text-primary font-semibold rounded-lg border border-primary-dark/20 hover:bg-primary/10 transition duration-150 flex items-center justify-center text-sm"> <!-- mt-4からmt-3に、テキストサイズを縮小 -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor"> <!-- アイコンサイズを縮小 -->
                     <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
                 </svg>
                 行を追加
@@ -203,7 +214,8 @@
 
             if (isNaN(targetPrice) || totalQuantity === 0) {
                 profitLossDisplay.textContent = '--';
-                profitLossDisplay.className = 'text-2xl font-bold mt-1 text-gray-800';
+                // フォントサイズを縮小
+                profitLossDisplay.className = 'text-xl font-bold mt-1 text-gray-800'; 
                 return;
             }
 
@@ -232,7 +244,8 @@
             } else {
                 colorClass = 'text-gray-800';
             }
-            profitLossDisplay.className = `text-2xl font-bold mt-1 ${colorClass}`;
+            // フォントサイズを縮小
+            profitLossDisplay.className = `text-xl font-bold mt-1 ${colorClass}`;
         }
 
         // ====================================================================
@@ -248,47 +261,50 @@
             const transaction = transactions[index];
             
             // モバイルとPCで異なるレイアウトを適用 (sm:grid)
+            // 行のパディングを p-3 から p-2 に縮小
             return `
-                <div id="row-${index}" class="bg-bg-light p-3 rounded-lg shadow-sm sm:grid sm:grid-cols-12 sm:gap-2 items-center border-b border-gray-200 last:border-b-0">
+                <div id="row-${index}" class="bg-bg-light p-2 rounded-lg shadow-sm sm:grid sm:grid-cols-12 sm:gap-2 items-center border-b border-gray-200 last:border-b-0">
                     
                     <!-- 1. 価格入力＆ボタン (col-span-4) -->
-                    <div class="sm:col-span-4 mb-3 sm:mb-0">
+                    <div class="sm:col-span-4 mb-2 sm:mb-0"> <!-- mb-3からmb-2に縮小 -->
                         <label for="price-${index}" class="block text-xs font-medium text-gray-500 sm:hidden mb-1">価格</label>
                         <div class="flex items-stretch space-x-1">
-                            <!-- 価格マイナスボタン: ラベルの垂直位置を調整するために-mt-0.5を追加 -->
-                            <button onclick="changePrice(${index}, -1)" class="w-10 h-10 flex items-center justify-center bg-danger text-white text-2xl font-bold rounded-l-lg hover:bg-danger/80 transition duration-150" aria-label="価格を減らす"><span class="-mt-0.5">-</span></button>
-                            <!-- 入力欄のパディングを py-2 に調整 -->
+                            <!-- ボタンサイズを w-10 h-10 から w-9 h-9 に縮小 -->
+                            <button onclick="changePrice(${index}, -1)" class="w-9 h-9 flex items-center justify-center bg-danger text-white text-xl font-bold rounded-l-lg hover:bg-danger/80 transition duration-150 no-zoom-btn select-none" aria-label="価格を減らす"><span class="-mt-0.5">-</span></button>
+                            <!-- 入力欄のパディングを py-1 に調整, text-sm に縮小 -->
                             <input type="number" id="price-${index}" value="${transaction.price}" oninput="handleInputChange(${index}, 'price', this.value)" placeholder="価格" step="any"
-                                   class="flex-1 py-2 text-center border-y border-gray-300 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary">
-                            <!-- ボタンサイズを w-10 h-10 に拡大 -->
-                            <button onclick="changePrice(${index}, 1)" class="w-10 h-10 flex items-center justify-center bg-success text-white text-2xl font-bold rounded-r-lg hover:bg-success/80 transition duration-150" aria-label="価格を増やす">+</button>
+                                   class="flex-1 py-1 text-sm text-center border-y border-gray-300 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary">
+                            <!-- ボタンサイズを w-10 h-10 から w-9 h-9 に縮小 -->
+                            <button onclick="changePrice(${index}, 1)" class="w-9 h-9 flex items-center justify-center bg-success text-white text-xl font-bold rounded-r-lg hover:bg-success/80 transition duration-150 no-zoom-btn select-none" aria-label="価格を増やす">+</button>
                         </div>
                     </div>
 
                     <!-- 2. 数量入力＆ボタン (col-span-4) -->
-                    <div class="sm:col-span-4 mb-3 sm:mb-0">
+                    <div class="sm:col-span-4 mb-2 sm:mb-0"> <!-- mb-3からmb-2に縮小 -->
                         <label for="quantity-${index}" class="block text-xs font-medium text-gray-500 sm:hidden mb-1">数量 (100単位)</label>
                         <div class="flex items-stretch space-x-1">
-                            <!-- 数量マイナスボタン: ラベルの垂直位置を調整するために-mt-0.5を追加 -->
-                            <button onclick="changeQuantity(${index}, -${quantityStep})" class="w-10 h-10 flex items-center justify-center bg-gray-500 text-white text-2xl font-bold rounded-l-lg hover:bg-gray-600 transition duration-150" aria-label="数量を100減らす"><span class="-mt-0.5">-</span></button>
-                            <!-- 入力欄のパディングを py-2 に調整 -->
+                            <!-- ボタンサイズを w-10 h-10 から w-9 h-9 に縮小 -->
+                            <button onclick="changeQuantity(${index}, -${quantityStep})" class="w-9 h-9 flex items-center justify-center bg-gray-500 text-white text-xl font-bold rounded-l-lg hover:bg-gray-600 transition duration-150 no-zoom-btn select-none" aria-label="数量を100減らす"><span class="-mt-0.5">-</span></button>
+                            <!-- 入力欄のパディングを py-1 に調整, text-sm に縮小 -->
                             <input type="number" id="quantity-${index}" value="${transaction.quantity}" oninput="handleInputChange(${index}, 'quantity', this.value)" placeholder="数量" step="${quantityStep}"
-                                   class="flex-1 py-2 text-center border-y border-gray-300 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary">
-                            <!-- ボタンサイズを w-10 h-10 に拡大し、記号を + に変更 -->
-                            <button onclick="changeQuantity(${index}, ${quantityStep})" class="w-10 h-10 flex items-center justify-center bg-gray-500 text-white text-2xl font-bold rounded-r-lg hover:bg-gray-600 transition duration-150" aria-label="数量を100増やす">+</button>
+                                   class="flex-1 py-1 text-sm text-center border-y border-gray-300 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary">
+                            <!-- ボタンサイズを w-10 h-10 から w-9 h-9 に縮小 -->
+                            <button onclick="changeQuantity(${index}, ${quantityStep})" class="w-9 h-9 flex items-center justify-center bg-gray-500 text-white text-xl font-bold rounded-r-lg hover:bg-gray-600 transition duration-150 no-zoom-btn select-none" aria-label="数量を100増やす">+</button>
                         </div>
                     </div>
 
                     <!-- 3. 合計金額 (col-span-3) -->
-                    <div class="sm:col-span-3 mb-3 sm:mb-0">
-                        <p class="text-sm font-medium text-gray-700 sm:text-right">合計金額:</p>
-                        <p id="total-${index}" class="text-lg font-bold text-gray-800 sm:text-right mt-1 sm:mt-0">--</p>
+                    <div class="sm:col-span-3 mb-2 sm:mb-0"> <!-- mb-3からmb-2に縮小 -->
+                        <p class="text-xs font-medium text-gray-700 sm:text-right">合計金額:</p> <!-- テキストサイズを縮小 -->
+                        <p id="total-${index}" class="text-base font-bold text-gray-800 sm:text-right mt-1 sm:mt-0">--</p> <!-- フォントサイズを縮小 -->
                     </div>
 
                     <!-- 4. 削除ボタン (col-span-1) -->
                     <div class="sm:col-span-1 flex justify-center sm:justify-end">
-                        <button onclick="removeRow(${index})" class="w-8 h-8 text-danger hover:bg-danger/10 rounded-full flex items-center justify-center transition duration-150" aria-label="この行を削除">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <!-- ボタンサイズを w-8 h-8 から w-7 h-7 に縮小 -->
+                        <button onclick="removeRow(${index})" class="w-7 h-7 text-danger hover:bg-danger/10 rounded-full flex items-center justify-center transition duration-150" aria-label="この行を削除">
+                            <!-- アイコンサイズを h-4 w-4 に縮小 -->
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm4 0a1 1 0 10-2 0v6a1 1 0 102 0V8z" clip-rule="evenodd" />
                             </svg>
                         </button>
