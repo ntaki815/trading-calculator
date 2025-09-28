@@ -1,535 +1,469 @@
 <!DOCTYPE html>
 <html lang="ja">
-  <head>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trade Calculator</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/element-ui@2.15.14/lib/theme-chalk/index.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
-  </head>
-  <body>
-    <div id="app">
-      <el-container>
-        <el-header>
-          <div class="header-title">Trade<br/>Calculator</div>
-        </el-header>
-        <el-container>
-          <el-main>
-            <el-row style="margin-bottom: 20px;">
-              <el-col span="24">
-                <!--  -->
-                <el-card class="box-card" shadow="hover">
-                  <div slot="header" class="clearfix">
-                    <span>逆指値/損益計算</span>
-                  </div>
-                  <div class="card-body">
-                    <el-row style="margin-bottom: 10px">
-                      <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
-                        <el-descriptions direction="vertical" :column="1" size="mini" border>
-                          <el-descriptions-item label="建区分" :content-style="{'padding-bottom': '13px'}">
-                            <el-switch v-model="inputTargetLine.isShort" active-text="売" inactive-text="買" active-color="#f06060"></el-switch>
-                          </el-descriptions-item>
-                        </el-descriptions>
-                      </el-col>
-                      <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
-                        <el-descriptions direction="vertical" :column="1" size="mini" border>
-                          <el-descriptions-item label="建単価">
-                            <div class="input-form-num-3step">
-                              <div class="ex-input-number ex-input-number--mini ex-is-controls-right">
-                                <span class="ex-input-number__decrease ex-input-number-first__decrease" @click="decreaseNumber('inputTargetLine', 'entryPrice', 1)"><i class="el-icon-arrow-down"></i></span>
-                                <span class="ex-input-number__increase ex-input-number-first__increase" @click="increaseNumber('inputTargetLine', 'entryPrice', 1)"><i class="el-icon-arrow-up"></i></span>
-                                <span class="ex-input-number-label ex-input-number-label-first">+1</span>
-                                <span class="ex-input-number__decrease ex-input-number-second__decrease" @click="decreaseNumber('inputTargetLine', 'entryPrice', 10)"><i class="el-icon-arrow-down"></i></span>
-                                <span class="ex-input-number__increase ex-input-number-second__increase" @click="increaseNumber('inputTargetLine', 'entryPrice', 10)"><i class="el-icon-arrow-up"></i></span>
-                                <span class="ex-input-number-label ex-input-number-label-second">+10</span>
-                                <span class="ex-input-number__decrease ex-input-number-third__decrease" @click="decreaseNumber('inputTargetLine', 'entryPrice', 100)"><i class="el-icon-arrow-down"></i></span>
-                                <span class="ex-input-number__increase ex-input-number-third__increase" @click="increaseNumber('inputTargetLine', 'entryPrice', 100)"><i class="el-icon-arrow-up"></i></span>
-                                <span class="ex-input-number-label ex-input-number-label-third">+100</span>
-                                <div class="ex-input ex-input--mini">
-                                  <input type="text" autocomplete="off" class="ex-input__inner" v-model="inputTargetLine.entryPrice">
-                                </div>
-                              </div>
-                            </div>
-                          </el-descriptions-item>
-                        </el-descriptions>
-                      </el-col>
-                      <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
-                        <el-descriptions direction="vertical" :column="1" size="mini" border>
-                          <el-descriptions-item label="数量">
-                            <el-input-number v-model="inputTargetLine.tradeShares" size="mini" controls-position="right" :step="100" :min="0"></el-input-number>
-                          </el-descriptions-item>
-                        </el-descriptions>
-                      </el-col>
-                      <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
-                        <el-descriptions direction="vertical" :column="1" size="mini" border>
-                              <el-descriptions-item label="ロスカットレート">
-                            <el-input-number v-model="inputTargetLine.lossCutRate" size="mini" controls-position="right"></el-input-number>
-                          </el-descriptions-item>
-                        </el-descriptions>
-                      </el-col>
-                    </el-row>
-                    <el-row style="margin-bottom: 10px">
-                      <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
-                        <el-descriptions direction="vertical" :column="1" size="mini" border>
-                          <el-descriptions-item label="現在値">
-                            <div style="position: relative;">
-                              <div class="input-form-num-3step">
-                                <div class="ex-input-number ex-input-number--mini ex-is-controls-right">
-                                  <span class="ex-input-number__decrease ex-input-number-first__decrease" @click="decreaseNumber('inputTargetLine', 'currentPrice', 1)"><i class="el-icon-arrow-down"></i></span>
-                                  <span class="ex-input-number__increase ex-input-number-first__increase" @click="increaseNumber('inputTargetLine', 'currentPrice', 1)"><i class="el-icon-arrow-up"></i></span>
-                                  <span class="ex-input-number-label ex-input-number-label-first">+1</span>
-                                  <span class="ex-input-number__decrease ex-input-number-second__decrease" @click="decreaseNumber('inputTargetLine', 'currentPrice', 10)"><i class="el-icon-arrow-down"></i></span>
-                                  <span class="ex-input-number__increase ex-input-number-second__increase" @click="increaseNumber('inputTargetLine', 'currentPrice', 10)"><i class="el-icon-arrow-up"></i></span>
-                                  <span class="ex-input-number-label ex-input-number-label-second">+10</span>
-                                  <span class="ex-input-number__decrease ex-input-number-third__decrease" @click="decreaseNumber('inputTargetLine', 'currentPrice', 100)"><i class="el-icon-arrow-down"></i></span>
-                                  <span class="ex-input-number__increase ex-input-number-third__increase" @click="increaseNumber('inputTargetLine', 'currentPrice', 100)"><i class="el-icon-arrow-up"></i></span>
-                                  <span class="ex-input-number-label ex-input-number-label-third">+100</span>
-                                  <div class="ex-input ex-input--mini">
-                                    <input type="text" autocomplete="off" class="ex-input__inner" v-model="inputTargetLine.currentPrice">
-                                  </div>
-                                </div>
-                              </div>
-                              <div style="position: absolute;top: -21px;left: 83px;z-index: 4;">
-                                <el-button icon="el-icon-copy-document" size="medium" type="text" @click="copyEntryPrice"></el-button>
-                              </div>
-                            </div>
-                          </el-descriptions-item>
-                        </el-descriptions>
-                      </el-col>
-                    </el-row>
-                    <el-row>
-                      <el-col :xs="24" :sm="8" :md="8" :lg="8" :xl="8">
-                        <el-descriptions :column="1" size="mini" border>
-                          <el-descriptions-item label="ロスカット単価" label-class-name="width-120">
-                            {{ outputTargetLineLossCutPrice.toLocaleString() }}
-                          </el-descriptions-item>
-                        </el-descriptions>
-                      </el-col>
-                      <el-col :xs="24" :sm="8" :md="8" :lg="8" :xl="8">
-                        <el-descriptions :column="1" size="mini" border>
-                          <el-descriptions-item label="利益" label-class-name="width-120">
-                            {{ outputTargetLineProfit.toLocaleString() }}
-                          </el-descriptions-item>
-                        </el-descriptions>
-                      </el-col>
-                      <el-col :xs="24" :sm="8" :md="8" :lg="8" :xl="8">
-                        <el-descriptions :column="1" size="mini" border>
-                          <el-descriptions-item label="損失" label-class-name="width-120">
-                            {{ outputTargetLineLoss.toLocaleString() }}
-                          </el-descriptions-item>
-                        </el-descriptions>
-                      </el-col>
-                    </el-row>
-                  </div>
-                </el-card>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col span="24">
-                <!--  -->
-                <el-card class="box-card" shadow="hover">
-                  <div slot="header" class="clearfix">
-                    <span>難平計算</span>
-                  </div>
-                  <div class="card-body">
-                    <el-row style="margin-bottom: 10px">
-                      <el-col :xs="24" :sm="8" :md="8" :lg="8" :xl="8">
-                        <el-descriptions :column="1" size="mini" border>
-                          <el-descriptions-item label="平均単価" label-class-name="width-120">
-                            {{ outputAveragingPrice.toLocaleString() }}
-                          </el-descriptions-item>
-                        </el-descriptions>
-                      </el-col>
-                      <el-col :xs="24" :sm="8" :md="8" :lg="8" :xl="8">
-                        <el-descriptions :column="1" size="mini" border>
-                          <el-descriptions-item label="数量" label-class-name="width-120">
-                            {{ outputAveragingShares.toLocaleString() }}
-                          </el-descriptions-item>
-                        </el-descriptions>
-                      </el-col>
-                      <el-col :xs="24" :sm="8" :md="8" :lg="8" :xl="8">
-                        <el-descriptions :column="1" size="mini" border>
-                          <el-descriptions-item label="価格" label-class-name="width-120">
-                            {{ outputAveragingAmount.toLocaleString() }}
-                          </el-descriptions-item>
-                        </el-descriptions>
-                      </el-col>
-                    </el-row>
-                    <el-row>
-                      <div class="averaging-calculate-detail">
-                        <table class="averaging-detail">
-                          <thead>
-                            <tr>
-                              <th style="width: 45px;">
-                                <el-button size="mini" round @click="averagingAddRow()"><i class="el-icon-plus"></i></el-button>
-                              </th>
-                              <th style="min-width: 200px;width: 30%;">建単価</th>
-                              <th style="min-width: 130px;width: 30%;">数量</th>
-                              <th style="min-width: 130px;">合計</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr v-for="(item, index) in inputAveraging.data" :key="index">
-                              <td>
-                                <el-row>
-                                  <el-col :span="12">
-                                    <el-button type="text" @click="averagingDeleteRow(index)"><i class="el-icon-delete"></i></el-button>
-                                  </el-col>
-                                  <el-col :span="12">
-                                    <el-button type="text" @click="averagingDuplicateRow(index)"><i class="el-icon-copy-document"></i></el-button>
-                                  </el-col>
-                                </el-row>
-                              </td>
-                              <td>
-                                <div class="input-form-num-3step">
-                                  <div class="ex-input-number ex-input-number--mini ex-is-controls-right">
-                                    <span class="ex-input-number__decrease ex-input-number-first__decrease" @click="decreaseAveragingRowNumber(index, 1)"><i class="el-icon-arrow-down"></i></span>
-                                    <span class="ex-input-number__increase ex-input-number-first__increase" @click="increaseAveragingRowNumber(index, 1)"><i class="el-icon-arrow-up"></i></span>
-                                    <span class="ex-input-number-label ex-input-number-label-first">+1</span>
-                                    <span class="ex-input-number__decrease ex-input-number-second__decrease" @click="decreaseAveragingRowNumber(index, 10)"><i class="el-icon-arrow-down"></i></span>
-                                    <span class="ex-input-number__increase ex-input-number-second__increase" @click="increaseAveragingRowNumber(index, 10)"><i class="el-icon-arrow-up"></i></span>
-                                    <span class="ex-input-number-label ex-input-number-label-second">+10</span>
-                                    <span class="ex-input-number__decrease ex-input-number-third__decrease" @click="decreaseAveragingRowNumber(index, 100)"><i class="el-icon-arrow-down"></i></span>
-                                    <span class="ex-input-number__increase ex-input-number-third__increase" @click="increaseAveragingRowNumber(index, 100)"><i class="el-icon-arrow-up"></i></span>
-                                    <span class="ex-input-number-label ex-input-number-label-third">+100</span>
-                                    <div class="ex-input ex-input--mini">
-                                      <input type="text" autocomplete="off" class="ex-input__inner" v-model="item.price" @change="averagingOnChange(index)">
-                                    </div>
-                                  </div>
-                                </div>
-                              </td>
-                              <td>
-                                <el-input-number v-model="item.shares" size="mini" controls-position="right" :step="100" :min="0" @change="averagingOnChange(index)"></el-input-number>
-                              </td>
-                              <td class="text-right">
-                                <span>{{ item.amount.toLocaleString() }}</span>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </el-row>
-                  </div>
-                </el-card>
-            </el-col>
-          </el-main>
-        </el-container>
-      </el-container>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.7.11"></script>
-    <script src="https://cdn.jsdelivr.net/npm/element-ui@2.15.14/lib/index.min.js"></script>
-    <script src="//unpkg.com/element-ui/lib/umd/locale/ja.js"></script>
+    <title>投資売買シミュレーター</title>
+    <!-- Tailwind CSS CDNを読み込み -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <script>
-      ELEMENT.locale(ELEMENT.lang.ja)
-
-      const data = {
-        inputTargetLine: {
-          isShort: false,
-          entryPrice: 0,
-          tradeShares: 100,
-          lossCutRate: 3,
-          currentPrice: 0
-        },
-        inputAveraging: {
-          data: []
+        // Tailwindの設定：カスタムカラーとフォントを設定
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'Noto Sans JP', 'sans-serif'],
+                    },
+                    colors: {
+                        'primary': '#4f46e5',
+                        'primary-dark': '#4338ca',
+                        'success': '#10b981',
+                        'danger': '#ef4444',
+                        'bg-light': '#f9fafb',
+                    }
+                }
+            }
         }
-      }
-
-      const computed = {
-        outputTargetLineLossCutPrice: function() {
-          const isShort = this.inputTargetLine.isShort;
-          const entryPrice = Number(this.inputTargetLine.entryPrice);
-          const lossCutRate = Number(this.inputTargetLine.lossCutRate);
-          const price = isShort ? entryPrice * (1 + lossCutRate / 100) : entryPrice * (1 - lossCutRate / 100);
-          return price;
-        },
-        outputTargetLineLoss: function() {
-          const isShort = this.inputTargetLine.isShort;
-          const entryPrice = Number(this.inputTargetLine.entryPrice);
-          const tradeShares = Number(this.inputTargetLine.tradeShares);
-          const price = isShort ? (this.outputTargetLineLossCutPrice * tradeShares) - (entryPrice * tradeShares) 
-                                : (entryPrice * tradeShares) - (this.outputTargetLineLossCutPrice * tradeShares);
-          return price;
-        },
-        outputTargetLineProfit: function() {
-          const isShort = this.inputTargetLine.isShort;
-          const entryPrice = Number(this.inputTargetLine.entryPrice);
-          const tradeShares = Number(this.inputTargetLine.tradeShares);
-          const currentPrice = Number(this.inputTargetLine.currentPrice);
-          const price = isShort ? (entryPrice * tradeShares) - (currentPrice * tradeShares)
-                                : (currentPrice * tradeShares) - (entryPrice * tradeShares);
-          return price;
-        },
-        outputAveragingPrice: function() {
-          if (this.inputAveraging.data.length == 0) return 0;
-
-          const amount = this.inputAveraging.data.reduce(function(sum, data) {
-                            return sum + data.amount;
-                          }, 0);
-          const shares = this.inputAveraging.data.reduce(function(sum, data) {
-                            return sum + data.shares;
-                          }, 0);
-          if (amount == 0 || shares == 0) return 0;
-          return amount / shares;
-        },
-        outputAveragingShares: function() {
-          return this.inputAveraging.data.reduce(function(sum, data) {
-            return sum + data.shares;
-          }, 0);
-        },
-        outputAveragingAmount: function() {
-          return this.inputAveraging.data.reduce(function(sum, data) {
-            return sum + data.amount;
-          }, 0);
-        }
-      }
-
-      const methods = {
-        copyEntryPrice: function() {
-          const value = this.inputTargetLine.entryPrice;
-          this.inputTargetLine.currentPrice = value;
-        },
-        averagingAddRow: function() {
-          this.inputAveraging.data.push({ price: 0, shares: 0, amount: 0 });
-        },
-        averagingDeleteRow: function(index) {
-          this.inputAveraging.data.splice(index, 1);
-        },
-        averagingOnChange: function(index) {
-          const data = this.inputAveraging.data[index];
-          data.amount = Number(data.price) * Number(data.shares);
-        },
-        averagingDuplicateRow: function(index) {
-          const data = this.inputAveraging.data[index];
-          this.inputAveraging.data.push({ price: data.price, shares: data.shares, amount: data.amount });
-        },
-        increaseNumber: function(rootPropertyName, propertyName, step) {
-          let obj = this;
-          if (rootPropertyName != '') {
-            obj = this[rootPropertyName]
-          }
-          const value = Number(obj[propertyName]);
-          const calcedValue = value + step;
-          this.$set(obj, propertyName, calcedValue);
-        },
-        decreaseNumber: function(rootPropertyName, propertyName, step) {
-          let obj = this;
-          if (rootPropertyName != '') {
-            obj = this[rootPropertyName]
-          }
-          const value = Number(obj[propertyName]);
-          const calcedValue = value - step < 0 ? 0 : value - step;
-          this.$set(obj, propertyName, calcedValue);
-        },
-        increaseAveragingRowNumber: function(index, step) {
-          let obj = this.inputAveraging.data[index];
-          obj.price = Number(obj.price) + step;
-          obj.amount = Number(obj.price) * Number(obj.shares);
-          this.$set(this.inputAveraging.data, index, obj);
-        },
-        decreaseAveragingRowNumber: function(index, step) {
-          let obj = this.inputAveraging.data[index];
-          obj.price = Number(obj.price) - step < 0 ? 0 : Number(obj.price) - step;
-          obj.amount = Number(obj.price) * Number(obj.shares);
-          this.$set(this.inputAveraging.data, index, obj);
-        }
-      }
-
-      const watch = {
-      }
-
-      const vm = new Vue({
-        el: '#app',
-        data: data,
-        computed: computed,
-        methods: methods,
-        watch: watch
-      })
     </script>
     <style>
-      * {
-        box-sizing: border-box;
-      }
-      body {
-        font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",sans-serif;
-        line-height: 1;
-      }
-      .el-header {
-        background-color: #fff;
-        height: 60px;
-        width: 100%;
-        box-shadow: 0 10px 17.5px 0.5px rgba(0,0,0,.1);
-        transition: box-shadow .3s ease-in-out;
-        position: fixed;
-        top: 0;
-        right: 0;
-        left: 0;
-        z-index: 999;
-      }
-      .el-header>.header-title {
-        font-size: x-large;
-        font-weight: bold;
-        width: 100px;
-        position: absolute;
-        top: 4px;
-      }
-      .el-main {
-        margin-top: 60px;
-      }
-      .el-card__body {
-        background-color: #f5f5f5;
-      }
-      .ex-input-number--mini {
-        width: 186px;
-        line-height: 26px;
-      }
-      .ex-input-number {
-        position: relative;
-        display: inline-block;
-      }
-      .ex-input-number.ex-is-controls-right {
-        line-height: 13px;
-      }
-      .ex-input-number.ex-is-controls-right .ex-input-number__decrease.ex-input-number-first__decrease {
-        right: 57px;
-      }
-      .ex-input-number.ex-is-controls-right .ex-input-number__decrease.ex-input-number-second__decrease {
-        right: 29px;
-      }
-      .ex-input-number.ex-is-controls-right .ex-input-number__decrease.ex-input-number-third__decrease {
-        right: 1px;
-        border-radius: 0 0 4px;
-      }
-      .ex-input-number.ex-is-controls-right .ex-input-number__decrease {
-        bottom: 1px;
-        top: auto;
-        left: auto;
-        border-right: none;
-        border-left: 1px solid #DCDFE6;
-      }
-      .ex-input-number.ex-is-controls-right .ex-input-number__increase.ex-input-number-first__increase {
-        right: 57px;
-      }
-      .ex-input-number.ex-is-controls-right .ex-input-number__increase.ex-input-number-second__increase {
-        right: 29px;
-      }
-      .ex-input-number.ex-is-controls-right .ex-input-number__increase.ex-input-number-third__increase {
-        right: 1px;
-        border-radius: 0 4px 0 0;
-      }
-      .ex-input-number.ex-is-controls-right .ex-input-number__increase {
-        top: 1px;
-        border-bottom: 1px solid #DCDFE6;
-        border-left: 1px solid #DCDFE6;
-      }
-      .ex-input-number.ex-is-controls-right .ex-input-number__decrease, .ex-input-number.ex-is-controls-right .ex-input-number__increase {
-        height: auto;
-      }
-      .ex-input-number--mini .ex-input-number__decrease, .ex-input-number--mini .ex-input-number__increase {
-        width: 28px;
-        font-size: 12px;
-      }
-      .ex-input-number__decrease, .ex-input-number__increase {
-        position: absolute;
-        z-index: 1;
-        text-align: center;
-        background: #F5F7FA;
-        color: #606266;
-        cursor: pointer;
-      }
-      .ex-input-number__decrease:hover, .ex-input-number__increase:hover {
-        color: #409EFF;
-      }
-      .ex-input-number__decrease:hover ~ .ex-input .ex-input__inner, .ex-input-number__increase:hover ~ .ex-input .ex-input__inner {
-        border-color: #409EFF;
-        outline: 0;
-      }
-      .ex-input-number.ex-is-controls-right .ex-input-number-label.ex-input-number-label-first {
-        right: 65px;
-      }
-      .ex-input-number.ex-is-controls-right .ex-input-number-label.ex-input-number-label-second {
-        right: 34px;
-      }
-      .ex-input-number.ex-is-controls-right .ex-input-number-label.ex-input-number-label-third {
-        right: 3px;
-      }
-      .ex-input-number.ex-is-controls-right .ex-input-number-label {
-        position: absolute;
-        z-index: 2;
-        top: -7px;
-        font-size: 2px;
-        color: #606266;
-        pointer-events: none;
-      }
-      .ex-input-number .ex-input {
-        display: block;
-      }
-      .ex-input--mini {
-        font-size: 12px;
-      }
-      .ex-input {
-        position: relative;
-        width: 100%;
-      }
-      .ex-input-number.ex-is-controls-right .ex-input__inner {
-        padding-left: 15px;
-        padding-right: 106px;
-      }
-      .ex-input--mini .ex-input__inner {
-        height: 28px;
-        line-height: 28px;
-      }
-      .ex-input-number .ex-input__inner {
-        appearance: none;
-        -webkit-appearance: none;
-        text-align: center;
-      }
-      .ex-input__inner {
-        background-color: #FFF;
-        background-image: none;
-        border-radius: 4px;
-        border: 1px solid #DCDFE6;
-        box-sizing: border-box;
-        color: #606266;
-        display: inline-block;
-        outline: 0;
-        padding: 0 15px;
-        -webkit-transition: border-color .2s cubic-bezier(.645,.045,.355,1);
-        transition: border-color .2s cubic-bezier(.645,.045,.355,1);
-        width: 100%;
-        font-size: inherit;
-      }
-      .ex-input__inner:hover {
-        border-color: #C0C4CC;
-      }
-      .ex-input__inner:focus {
-        border-color: #409EFF;
-        outline: 0;
-      }
-      .width-120 {
-        width: 120px;
-      }
-      .text-right {
-        text-align: right;
-      }
-      .averaging-calculate-detail {
-        width: calc(80vw);
-        overflow-y: auto;
-        padding: 0;
-        margin: 0;
-        font-size: 12px;
-      }
-      .averaging-detail {
-        padding: 8px;
-        margin: 0;
-      }
-      .averaging-detail th {
-        font-weight: 400;
-        color: #909399;
-      }
-      .averaging-detail td {
-        color: #606266;
-      }
+        /* スクロールバーの非表示（モバイルフレンドリー） */
+        body {
+            font-family: 'Inter', 'Noto Sans JP', sans-serif;
+            background-color: #f3f4f6; /* わずかに暗い背景 */
+        }
+        /* スタイリングの微調整 */
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type="number"] {
+            -moz-appearance: textfield;
+            text-align: center; 
+        }
     </style>
-  </body>
+</head>
+<body class="p-3 sm:p-4 md:p-6">
+
+    <div class="max-w-4xl mx-auto">
+
+        <!-- ヘッダーとトグルボタン -->
+        <header class="mb-4 space-y-4">
+            <h1 class="text-3xl font-extrabold text-gray-800 text-center">難平計算</h1>
+
+            <!-- ショート/ロング トグルボタン -->
+            <div id="typeToggle" class="flex p-1 bg-white rounded-lg shadow-md w-full max-w-sm mx-auto cursor-pointer">
+                <div id="longBtn" data-type="long" class="flex-1 text-center py-2 px-4 rounded-md font-semibold transition-all duration-300 text-white bg-primary shadow-sm">
+                    ロング (買い)
+                </div>
+                <div id="shortBtn" data-type="short" class="flex-1 text-center py-2 px-4 rounded-md font-semibold transition-all duration-300 text-gray-500 hover:bg-bg-light">
+                    ショート (売り)
+                </div>
+            </div>
+        </header>
+
+        <!-- サマリー表示エリア -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
+            <div class="bg-white p-4 rounded-lg shadow-md border-l-4 border-primary">
+                <p class="text-sm font-medium text-gray-500">平均単価</p>
+                <p id="avgPriceDisplay" class="text-2xl font-bold text-gray-800 mt-1">--</p>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow-md border-l-4 border-primary">
+                <p class="text-sm font-medium text-gray-500">合計数量</p>
+                <p id="totalQuantityDisplay" class="text-2xl font-bold text-gray-800 mt-1">--</p>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow-md border-l-4 border-primary">
+                <p class="text-sm font-medium text-gray-500">合計金額</p>
+                <p id="totalValueDisplay" class="text-2xl font-bold text-gray-800 mt-1">--</p>
+            </div>
+        </div>
+        
+        <!-- 利確目標と損益エリア -->
+        <div class="bg-white p-4 rounded-lg shadow-md mb-6">
+            <h2 class="text-xl font-semibold mb-3 text-gray-700">利確目標シミュレーション</h2>
+            <div class="flex flex-col sm:flex-row items-center gap-4">
+                <div class="flex-1 w-full">
+                    <label for="targetPrice" class="block text-sm font-medium text-gray-700 mb-1">利確予定価格</label>
+                    <input type="number" id="targetPrice" oninput="calculateProfitLoss()" placeholder="価格を入力"
+                           class="w-full py-2 px-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary">
+                </div>
+                <div class="flex-1 w-full mt-2 sm:mt-0">
+                    <p class="text-sm font-medium text-gray-500 mb-1">想定損益 (P&L)</p>
+                    <p id="profitLossDisplay" class="text-2xl font-bold mt-1 text-gray-800">--</p>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- 取引入力テーブル -->
+        <div class="bg-white p-4 rounded-lg shadow-md">
+            <div id="transactionTable">
+                <!-- テーブルヘッダー (PC/タブレット用) -->
+                <div class="hidden sm:grid grid-cols-12 gap-2 text-sm font-semibold text-gray-600 border-b pb-2 mb-3">
+                    <div class="col-span-4 text-center">価格</div>
+                    <div class="col-span-4 text-center">数量 (100単位)</div>
+                    <div class="col-span-3 text-right">合計金額</div>
+                    <div class="col-span-1"></div> <!-- 削除ボタン用 -->
+                </div>
+
+                <!-- 取引行がここに追加される -->
+                <div id="transactionsContainer" class="space-y-3">
+                    <!-- 初期行はJavaScriptで追加 -->
+                </div>
+            </div>
+
+            <!-- 行追加ボタン -->
+            <button id="addRowBtn" class="w-full mt-4 py-2 px-4 bg-bg-light text-primary font-semibold rounded-lg border border-primary-dark/20 hover:bg-primary/10 transition duration-150 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+                </svg>
+                行を追加
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        // グローバル変数と初期設定
+        let transactions = [];
+        let isLong = true; // true: ロング (買い), false: ショート (売り)
+        const quantityStep = 100;
+
+        // ====================================================================
+        // I. DOM要素の取得
+        // ====================================================================
+        const container = document.getElementById('transactionsContainer');
+        const addRowBtn = document.getElementById('addRowBtn');
+        const avgPriceDisplay = document.getElementById('avgPriceDisplay');
+        const totalQuantityDisplay = document.getElementById('totalQuantityDisplay');
+        const totalValueDisplay = document.getElementById('totalValueDisplay');
+        const targetPriceInput = document.getElementById('targetPrice');
+        const profitLossDisplay = document.getElementById('profitLossDisplay');
+        const longBtn = document.getElementById('longBtn');
+        const shortBtn = document.getElementById('shortBtn');
+
+        // ====================================================================
+        // II. コアロジック関数
+        // ====================================================================
+
+        /**
+         * すべての取引を再計算し、サマリー表示を更新する
+         */
+        function updateSummary() {
+            let totalValue = 0;
+            let totalQuantity = 0;
+
+            // 1. 各行の合計金額を計算し、合計を集計
+            transactions.forEach((transaction, index) => {
+                const price = parseFloat(transaction.price);
+                const quantity = parseFloat(transaction.quantity);
+                
+                // 有効な数値であることを確認
+                if (isNaN(price) || isNaN(quantity)) return;
+
+                const rowTotal = price * quantity;
+                totalValue += rowTotal;
+                totalQuantity += quantity;
+
+                // 各行の合計金額表示を更新
+                const rowTotalElement = document.getElementById(`total-${index}`);
+                if (rowTotalElement) {
+                    rowTotalElement.textContent = formatCurrency(rowTotal);
+                }
+            });
+
+            // 2. 平均単価を計算
+            const avgPrice = totalQuantity > 0 ? totalValue / totalQuantity : 0;
+
+            // 3. サマリー表示の更新
+            avgPriceDisplay.textContent = formatCurrency(avgPrice);
+            totalQuantityDisplay.textContent = formatQuantity(totalQuantity);
+            totalValueDisplay.textContent = formatCurrency(totalValue);
+
+            // 4. 損益計算も同時に実行
+            calculateProfitLoss();
+        }
+
+        /**
+         * 利確予定価格に基づき損益を計算し、表示を更新する
+         */
+        function calculateProfitLoss() {
+            const targetPrice = parseFloat(targetPriceInput.value);
+            let totalValue = 0;
+            let totalQuantity = 0;
+
+            transactions.forEach(t => {
+                const price = parseFloat(t.price);
+                const quantity = parseFloat(t.quantity);
+                if (!isNaN(price) && !isNaN(quantity)) {
+                    totalValue += price * quantity;
+                    totalQuantity += quantity;
+                }
+            });
+
+            if (isNaN(targetPrice) || totalQuantity === 0) {
+                profitLossDisplay.textContent = '--';
+                profitLossDisplay.className = 'text-2xl font-bold mt-1 text-gray-800';
+                return;
+            }
+
+            // P&L = (決済価格 - 平均単価) × 合計数量
+            const avgPrice = totalValue / totalQuantity;
+            let profitLoss;
+            
+            if (isLong) {
+                // ロング (買い): (売却価格 - 平均単価) * 数量
+                profitLoss = (targetPrice - avgPrice) * totalQuantity;
+            } else {
+                // ショート (売り): (平均単価 - 買戻し価格) * 数量
+                profitLoss = (avgPrice - targetPrice) * totalQuantity;
+            }
+
+            // 損益表示の更新
+            const displayValue = formatCurrency(profitLoss);
+            profitLossDisplay.textContent = displayValue;
+
+            // 色付け (プラス:緑, マイナス:赤, ゼロ:黒)
+            let colorClass;
+            if (profitLoss > 0.001) {
+                colorClass = 'text-success';
+            } else if (profitLoss < -0.001) {
+                colorClass = 'text-danger';
+            } else {
+                colorClass = 'text-gray-800';
+            }
+            profitLossDisplay.className = `text-2xl font-bold mt-1 ${colorClass}`;
+        }
+
+        // ====================================================================
+        // III. DOM操作関数
+        // ====================================================================
+
+        /**
+         * 新しい取引行のHTML要素を作成する
+         * @param {number} index - 取引のインデックス
+         * @returns {string} - HTML文字列
+         */
+        function createTransactionRow(index) {
+            const transaction = transactions[index];
+            
+            // モバイルとPCで異なるレイアウトを適用 (sm:grid)
+            return `
+                <div id="row-${index}" class="bg-bg-light p-3 rounded-lg shadow-sm sm:grid sm:grid-cols-12 sm:gap-2 items-center border-b border-gray-200 last:border-b-0">
+                    
+                    <!-- 1. 価格入力＆ボタン (col-span-4) -->
+                    <div class="sm:col-span-4 mb-3 sm:mb-0">
+                        <label for="price-${index}" class="block text-xs font-medium text-gray-500 sm:hidden mb-1">価格</label>
+                        <div class="flex items-stretch space-x-1">
+                            <!-- 価格マイナスボタン: ラベルの垂直位置を調整するために-mt-0.5を追加 -->
+                            <button onclick="changePrice(${index}, -1)" class="w-10 h-10 flex items-center justify-center bg-danger text-white text-2xl font-bold rounded-l-lg hover:bg-danger/80 transition duration-150" aria-label="価格を減らす"><span class="-mt-0.5">-</span></button>
+                            <!-- 入力欄のパディングを py-2 に調整 -->
+                            <input type="number" id="price-${index}" value="${transaction.price}" oninput="handleInputChange(${index}, 'price', this.value)" placeholder="価格" step="any"
+                                   class="flex-1 py-2 text-center border-y border-gray-300 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary">
+                            <!-- ボタンサイズを w-10 h-10 に拡大 -->
+                            <button onclick="changePrice(${index}, 1)" class="w-10 h-10 flex items-center justify-center bg-success text-white text-2xl font-bold rounded-r-lg hover:bg-success/80 transition duration-150" aria-label="価格を増やす">+</button>
+                        </div>
+                    </div>
+
+                    <!-- 2. 数量入力＆ボタン (col-span-4) -->
+                    <div class="sm:col-span-4 mb-3 sm:mb-0">
+                        <label for="quantity-${index}" class="block text-xs font-medium text-gray-500 sm:hidden mb-1">数量 (100単位)</label>
+                        <div class="flex items-stretch space-x-1">
+                            <!-- 数量マイナスボタン: ラベルの垂直位置を調整するために-mt-0.5を追加 -->
+                            <button onclick="changeQuantity(${index}, -${quantityStep})" class="w-10 h-10 flex items-center justify-center bg-gray-500 text-white text-2xl font-bold rounded-l-lg hover:bg-gray-600 transition duration-150" aria-label="数量を100減らす"><span class="-mt-0.5">-</span></button>
+                            <!-- 入力欄のパディングを py-2 に調整 -->
+                            <input type="number" id="quantity-${index}" value="${transaction.quantity}" oninput="handleInputChange(${index}, 'quantity', this.value)" placeholder="数量" step="${quantityStep}"
+                                   class="flex-1 py-2 text-center border-y border-gray-300 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary">
+                            <!-- ボタンサイズを w-10 h-10 に拡大し、記号を + に変更 -->
+                            <button onclick="changeQuantity(${index}, ${quantityStep})" class="w-10 h-10 flex items-center justify-center bg-gray-500 text-white text-2xl font-bold rounded-r-lg hover:bg-gray-600 transition duration-150" aria-label="数量を100増やす">+</button>
+                        </div>
+                    </div>
+
+                    <!-- 3. 合計金額 (col-span-3) -->
+                    <div class="sm:col-span-3 mb-3 sm:mb-0">
+                        <p class="text-sm font-medium text-gray-700 sm:text-right">合計金額:</p>
+                        <p id="total-${index}" class="text-lg font-bold text-gray-800 sm:text-right mt-1 sm:mt-0">--</p>
+                    </div>
+
+                    <!-- 4. 削除ボタン (col-span-1) -->
+                    <div class="sm:col-span-1 flex justify-center sm:justify-end">
+                        <button onclick="removeRow(${index})" class="w-8 h-8 text-danger hover:bg-danger/10 rounded-full flex items-center justify-center transition duration-150" aria-label="この行を削除">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm4 0a1 1 0 10-2 0v6a1 1 0 102 0V8z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        /**
+         * 指定されたインデックスの取引行を削除し、再描画する
+         * @param {number} indexToRemove - 削除する取引のインデックス
+         */
+        function removeRow(indexToRemove) {
+            // 対象の行を削除
+            transactions.splice(indexToRemove, 1);
+            
+            // DOMから要素を削除
+            const rowElement = document.getElementById(`row-${indexToRemove}`);
+            if (rowElement) {
+                rowElement.remove();
+            }
+
+            // 残りの行を再描画してインデックスを修正
+            renderTransactions();
+            updateSummary();
+        }
+
+        /**
+         * 全ての取引行をコンテナに描画する
+         */
+        function renderTransactions() {
+            container.innerHTML = ''; // コンテナをクリア
+            transactions.forEach((_, index) => {
+                container.insertAdjacentHTML('beforeend', createTransactionRow(index));
+            });
+            updateSummary(); // 描画後に必ずサマリーを更新
+        }
+
+        /**
+         * 新しい取引行を追加する
+         */
+        function addRow() {
+            const newIndex = transactions.length;
+            transactions.push({ price: 0, quantity: 0 });
+            container.insertAdjacentHTML('beforeend', createTransactionRow(newIndex));
+            // 新しい行がビューに入るようにスクロール
+            document.getElementById(`row-${newIndex}`).scrollIntoView({ behavior: 'smooth', block: 'end' });
+            updateSummary();
+        }
+
+        // ====================================================================
+        // IV. イベントハンドラ
+        // ====================================================================
+
+        /**
+         * 入力フィールドが変更されたときの処理
+         * @param {number} index - 取引のインデックス
+         * @param {string} field - 変更されたフィールド ('price' または 'quantity')
+         * @param {string} value - 新しい値
+         */
+        function handleInputChange(index, field, value) {
+            // NaNの場合は0に設定
+            const numericValue = parseFloat(value);
+            transactions[index][field] = isNaN(numericValue) ? 0 : numericValue;
+            updateSummary();
+        }
+
+        /**
+         * 価格増減ボタンの処理
+         * @param {number} index - 取引のインデックス
+         * @param {number} delta - 変更量 (通常 +1 または -1)
+         */
+        function changePrice(index, delta) {
+            const currentPrice = parseFloat(transactions[index].price);
+            const newPrice = Math.max(0, currentPrice + delta); // 価格は0未満にならない
+            transactions[index].price = newPrice.toFixed(2); // 小数点第2位まで保持
+            document.getElementById(`price-${index}`).value = newPrice.toFixed(2);
+            updateSummary();
+        }
+
+        /**
+         * 数量増減ボタンの処理
+         * @param {number} index - 取引のインデックス
+         * @param {number} delta - 変更量 (+100 または -100)
+         */
+        function changeQuantity(index, delta) {
+            const currentQuantity = parseFloat(transactions[index].quantity);
+            const newQuantity = Math.max(0, currentQuantity + delta); // 数量は0未満にならない
+            transactions[index].quantity = newQuantity;
+            document.getElementById(`quantity-${index}`).value = newQuantity;
+            updateSummary();
+        }
+        
+        /**
+         * ショート/ロングのトグル状態を切り替える
+         * @param {boolean} isNewLong - 新しい状態 (true:ロング, false:ショート)
+         */
+        function toggleType(isNewLong) {
+            if (isLong === isNewLong) return; // 変更がない場合は何もしない
+
+            isLong = isNewLong;
+
+            if (isLong) {
+                // ロングに切り替え
+                longBtn.classList.add('bg-primary', 'text-white', 'shadow-sm');
+                longBtn.classList.remove('text-gray-500', 'hover:bg-bg-light');
+                shortBtn.classList.remove('bg-primary', 'text-white', 'shadow-sm');
+                shortBtn.classList.add('text-gray-500', 'hover:bg-bg-light');
+                longBtn.textContent = 'ロング (買い)';
+                shortBtn.textContent = 'ショート (売り)';
+            } else {
+                // ショートに切り替え
+                shortBtn.classList.add('bg-primary', 'text-white', 'shadow-sm');
+                shortBtn.classList.remove('text-gray-500', 'hover:bg-bg-light');
+                longBtn.classList.remove('bg-primary', 'text-white', 'shadow-sm');
+                longBtn.classList.add('text-gray-500', 'hover:bg-bg-light');
+                longBtn.textContent = 'ロング (決済)';
+                shortBtn.textContent = 'ショート (新規)';
+            }
+            calculateProfitLoss(); // トグル後、P&Lを再計算
+        }
+
+
+        // ====================================================================
+        // V. ユーティリティ関数
+        // ====================================================================
+        
+        /**
+         * 通貨形式にフォーマットする
+         * @param {number} number - フォーマットする数値
+         * @returns {string} - フォーマットされた文字列
+         */
+        function formatCurrency(number) {
+            if (isNaN(number)) return '--';
+            const sign = number < 0 ? '-' : '';
+            const absNumber = Math.abs(number);
+            return sign + absNumber.toLocaleString('ja-JP', { minimumFractionDigits: 2, maximumFractionDigits: 4 });
+        }
+
+        /**
+         * 数量形式にフォーマットする
+         * @param {number} number - フォーマットする数値
+         * @returns {string} - フォーマットされた文字列
+         */
+        function formatQuantity(number) {
+            if (isNaN(number)) return '--';
+            return number.toLocaleString('ja-JP', { maximumFractionDigits: 0 });
+        }
+
+
+        // ====================================================================
+        // VI. 初期化とイベントリスナー設定
+        // ====================================================================
+        
+        function init() {
+            // デフォルトで4行を追加
+            for (let i = 0; i < 4; i++) {
+                transactions.push({ price: 0, quantity: 0 });
+            }
+
+            // 初期描画
+            renderTransactions();
+
+            // イベントリスナー
+            addRowBtn.addEventListener('click', addRow);
+            longBtn.addEventListener('click', () => toggleType(true));
+            shortBtn.addEventListener('click', () => toggleType(false));
+            targetPriceInput.addEventListener('input', calculateProfitLoss);
+            
+            // 初期トグル状態を反映
+            toggleType(true);
+        }
+
+        // ページロード時に初期化を実行
+        window.onload = init;
+    </script>
+</body>
 </html>
